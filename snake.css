@@ -1,0 +1,71 @@
+.html,.body{
+    border:none;
+    padding:none;
+    margin:none;
+}
+.square{
+    position: absolute;
+    border:2px solid lightgoldenrodyellow;
+    padding:none;
+    margin:none;
+    width: 18px;
+    height: 18px;  
+    background-color: lightcoral;
+}
+.food{
+    position: absolute;
+    border:2px solid rgb(79, 13, 165);
+    padding:none;
+    margin:none;
+    width: 18px;
+    height: 18px;  
+    background-color: rgb(240, 128, 225);
+    z-index: 2;
+}
+.main{
+    background-color: lightgreen;
+    z-index: 1;
+}
+.canvas{
+    position:absolute;
+    border:2px solid black;
+    padding:none;
+    margin:none;
+    min-height: 400px;
+    min-width: 400px;
+}
+.point{
+    position:absolute;
+    color: lime;
+    padding:none;
+    margin:none;
+    min-width: 200px;
+}
+.time{
+    position:absolute;
+    color:lightskyblue;
+    padding:none;
+    margin:none;
+    min-width: 200px;
+}
+.description{
+    position:absolute;
+    color: lightsalmon;
+    border: 2px dashed lightsteelblue;
+    padding:none;
+    margin:none;
+    text-align: justify;
+    min-width: 100px;
+}
+.button{
+    position:absolute;
+    display:flex;
+    flex-flow:row nowrap;
+    justify-content: space-between;
+}
+.adjust{
+    position:absolute;
+    display:flex;
+    flex-flow:row nowrap;
+    justify-content: space-between;
+}
