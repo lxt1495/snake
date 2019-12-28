@@ -8,40 +8,128 @@
     <link href='snake.css' rel='stylesheet' type='text/css' />
 </head>
 <body>
-    <div class='canvas'></div>
-    <div class='point'>Score: 0</div>
-    <div class='time'></div>
-    <p class='description'></p>
-    <div class='button'>
-        <button class='control'>pause</button>
-        <button class='reset'>reset</button>
+    <div class='menu'>
+        <button class='start'>Start</button>
+        <button class='sound'>Sound</button>
+        <button class='highscore'>High Score</button>
     </div>
-    <form class='adjust'>
-        <label>
-            Growth Rate
-            <select name='growthRate' class='growth-rate'>
-                <option value='slow'>slow</option>
-                <option value='normal'>normal</option>
-                <option value='fast'>fast</option>
-                <option value='super-fast'>super-fast</option>
-                <option value='nightmare'>nightmare</option>
-            </select>
-        </label>
-        <label>
-            Swiftness
-            <select name='Speed' class='swiftness'>
-                <option value='crawl'>crawl</option>
-                <option value='walk'>walk</option>
-                <option value='run'>run</option>
-                <option value='fly'>fly</option>
-                <option value='speedster'>speedster</option>
-            </select>
-        </label>
-    </form>
-    <div class='food'></div>
-    <div class='square main'></div>
-    <div class='square'></div>
-    <div class='square'></div>
+    <div class='modal-sound'>
+        <div class='modal-sound-content'>
+            <input type='range' min='0' max='100' class='volume' />
+            <div class='volume-display'>Volume:</div>
+        </div>
+    </div>
+    <div class='modal-highscore'>
+        <div class='modal-highscore-content'>
+            <div class='tab-button'>
+                <button id='tab-default'>Normal</button>
+                <button>Zombie</button>
+                <button>War Zone</button>
+                <button>Super War</button>
+            </div>
+            <div class='tab-content'>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <div class='game-mode'>
+        <div class='game-mode-content'>
+            <button class='mode-normal'>Normal</button>
+            <button class='mode-zombie'>Zombie Apocalypse</button>
+            <button class='mode-war'>War Zone</button>
+            <button class='mode-super'>Super war</button>
+        </div>
+    </div>
+    <div class='game-style'>
+        <div class='game-style-content'>
+            <button class='style-survivor'>Survivor</button>
+            <button class='style-timer'>Timer</button>
+            <label class='label-growth-rate'>
+                Growth Rate
+                <select name='growthRate' class='growth-rate'>
+                    <option value='slow' selected='true'>slow</option>
+                    <option value='normal'>normal</option>
+                    <option value='fast'>fast</option>
+                    <option value='super-fast'>super-fast</option>
+                    <option value='nightmare'>nightmare</option>
+                </select>
+            </label>
+            <label class='label-swiftness'>
+                Swiftness
+                <select name='Speed' class='swiftness'>
+                    <option value='crawl' id='crawl'>crawl</option>
+                    <option value='walk' id='walk'>walk</option>
+                    <option value='run' id='run' selected='true'>run</option>
+                    <option value='fly' id='fly'>fly</option>
+                    <option value='speedster' id='speedster'>speedster</option>
+                </select>
+            </label>
+            <label class='label-enemy-speed'>
+                Enemy Speed
+                <select name='enemySpeed' class='enemy-speed'>
+                    <option value='normal' selected='true'>normal</option>
+                    <option value='fast'>fast</option>
+                    <option value='super-fast'>super-fast</option>
+                </select>
+            </label>
+            <label class='label-map'>
+                Map
+                <select name='map' class='map'>
+                    <option value='none'>none</option>
+                    <option value='| | |' selected='true'>| | |</option>
+                    <option value='H'>H</option>
+                </select>
+            </label>
+            <label class='label-unbound'>
+                Unbound
+                <input type="checkbox" class='unbound' />
+            </label>
+        </div>
+    </div>
+    <div class='modal-menu'>
+        <div class='modal-menu-content'>
+            <button class='sound'>Sound</button>
+            <button class='reset'>Reset</button>
+            <button class='exit'>Exit</button>    
+        </div>
+    </div>
+    <div class='game'>
+        <div class='canvas'>
+            <div class='food'></div>
+            <div class='square main'>
+                <div class='eye-cover'></div>
+                <div class='eye'>
+                    <div class='eye-ball'>
+                        <div class='eye-sparkle'></div>
+                    </div>
+                    <div class='emo'></div>
+                </div>
+            </div>
+            <div class='square'></div>
+            <div class='square'></div>
+            <div class='foe main'>
+                <div class='foe-eye-cover'></div>
+                <div class='foe-eye'>
+                    <div class='foe-eye-ball'>
+                        <div class='foe-eye-sparkle'></div>
+                    </div>
+                    <div class='foe-emo'></div>
+                </div>
+            </div>
+            <div class='foe'></div>
+            <div class='foe'></div>
+        </div>
+        <div class='display'>
+            <button class='pause'>Menu</button>
+            <div class='point'>Score: 0</div>
+            <div class='time'></div>
+            <div class='feature'></div>
+            <p class='description'></p>
+        </div>
+    </div>
     <script src="snake.js"></script>
 </body>
 </html>

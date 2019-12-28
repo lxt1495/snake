@@ -1,30 +1,126 @@
-.html,.body{
+html,body{
     border:none;
     padding:none;
     margin:none;
+    background-color: lightsteelblue;
 }
-.square{
-    position: absolute;
-    border:2px solid lightgoldenrodyellow;
+.menu{
+    display:flex;
+    position: relative;
+    background-color: #fefefe;
+    border: 1px solid #888;
+    margin: 15% auto;
+    padding: 0;
+    width: 20%;
+    height: 20%;
+    display:flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+}
+.modal-sound-content{
+    position: relative;
+    background-color: #fefefe;
+    border: 1px solid #888;
+    padding:none;
+    margin: 15% auto;
+    width: 20%;
+    height: 10%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation: Dropdown 0.4s;
+}
+.modal-sound-content input{
+    border:none;
+    padding:none;
+    margin:auto;
+    width:100%;
+    height:4vh;
+}
+.modal-highscore-content{
+    position: relative;
+    background-color: #fefefe;
+    border: 1px solid #888;
+    padding:none;
+    margin: 15% auto;
+    width: 20%;
+    height: 50%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation: Dropdown 0.4s;
+}
+.tab-button{
+    display:flex;
+    flex-flow: row nowrap;
+    border: 1px solid #ccc;
     padding:none;
     margin:none;
-    width: 18px;
-    height: 18px;  
-    background-color: lightcoral;
+    background-color: #f1f1f1;
+    overflow:hidden
 }
-.food{
-    position: absolute;
-    border:2px solid rgb(79, 13, 165);
-    padding:none;
+.tab-button button{
+    display: block;
+    width:25%;
+    background-color: inherit;
+    border: none;
+    padding: 14px 16px;
     margin:none;
-    width: 18px;
-    height: 18px;  
-    background-color: rgb(240, 128, 225);
-    z-index: 2;
+    cursor: pointer;
+    transition: 0.3s;
 }
-.main{
-    background-color: lightgreen;
-    z-index: 1;
+.tab-button button:hover{
+    background-color: #ddd;
+}
+.tab-button button.active{
+    background-color: #ccc;
+}
+.tab-content > *{
+    display:none;
+    border:none;
+    padding:20px 0px;
+    margin:none;
+    width:100%;
+    height: 30vh;
+    color:red;
+    line-height: 5vh;
+    overflow:auto;
+    text-align: center;
+    animation: Fadein 2s;
+}
+.tab-content .active{
+    display:block
+}
+.modal-sound, .modal-highscore, .game-mode, .game-style, .modal-menu{
+    position:fixed;
+    display:none;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    overflow: auto;
+    background-color: rgb(0,0,0,0.4);
+    z-index:10;
+}
+.game-mode-content, .game-style-content, .modal-menu-content{
+    position: relative;
+    background-color: #fefefe;
+    border: 1px solid #888;
+    margin: 15% auto;
+    padding: 0;
+    width: 20%;
+    height: 20%;
+    display:flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    animation: Dropdown 0.4s;
+}
+label{
+    margin:auto
+}
+.label-enemy-speed{
+    display:none
+}
+.game{
+    display:none;
 }
 .canvas{
     position:absolute;
@@ -33,39 +129,218 @@
     margin:none;
     min-height: 400px;
     min-width: 400px;
+    background-color: lightyellow;
+}
+.brick{
+    position: absolute;
+    border:2px solid black;
+    padding:none;
+    margin:none;
+    width: 18px;
+    height: 18px;  
+    background-color: red;
+    z-index: 6;
+}
+.square{
+    position: absolute;
+    border:none;
+    padding:none;
+    margin:none;
+    width: 20px;
+    height: 20px;  
+    background-color: lightcoral;
+}
+.foe{
+    display:none;
+    position: absolute;
+    border:none;
+    padding:none;
+    margin:none;
+    width: 20px;
+    height: 20px;  
+    background-color: lightsalmon;
+    z-index: 7;
+}
+.foe.main{
+    z-index: 8;
+}
+.square.main{
+    z-index: 1;
+}
+.eye, .foe-eye{
+    border:none;
+    padding:none;
+    margin:none;
+    position:absolute;
+    width:15px;
+    height:15px;
+    margin: auto;
+    background-color: white;
+    border-radius:50%;
+    z-index: 2;
+}
+.emo, .foe-emo{
+    display: none;
+    position: relative;
+    border:none;
+    padding:none;
+    margin:auto;
+    color: black;
+    font-size: 15px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    z-index: 3;
+}
+.eye-ball, .foe-eye-ball{
+    position:relative;
+    width:5px;
+    height:5px;
+    border:none;
+    padding:none;
+    margin:auto;
+    background-color: black;
+    border-radius:50%;
+    z-index: 3;
+}
+.eye-sparkle, .foe-eye-sparkle{
+    display:none;
+    position:relative;
+    width:5px;
+    height:5px;
+    border:none;
+    padding:none;
+    margin:auto;
+    background-color:white;
+    border-radius:50%;
+    z-index: 4;
+}
+.eye-cover, .foe-eye-cover{
+    border:none;
+    padding:none;
+    margin:none;
+    position:absolute;
+    width:15px;
+    height:15px;
+    margin: auto;
+    background-color:black;
+    border-radius:50%;
+    max-height:0px;
+    transition: max-height 0.05s;
+    z-index: 5;
+}
+.food{
+    position: absolute;
+    border:none;
+    padding:none;
+    margin:none;
+    width: 20px;
+    height: 20px;  
+    background-color: firebrick;
+    border-radius: 50%;
+    animation: Fadein 1s;
+    z-index: 5;
+}
+.bomb{
+    position: absolute;
+    border:none;
+    padding:none;
+    margin:none;
+    width: 20px;
+    height: 20px;  
+    background-color: red;
+    border-radius: 50%;
+    animation: Fadeout 0.5s infinite;
+    z-index: 6;
+}
+.enemy{
+    position: absolute;
+    border:none;
+    padding:none;
+    margin:none;
+    width: 20px;
+    height: 20px;  
+    background-color:blue;
+    border-radius: 50%;
+    animation: Fadein 1s;
+    z-index: 6;
+}
+.laser{
+    position: absolute;
+    border:none;
+    padding:none;
+    margin:none;
+    background-color:red;
+    animation: Fadeout 0.2s infinite;
+}
+.display{
+    position:absolute;
+    display:flex;
+    flex-flow: column nowrap;
+    justify-content: space-around;
 }
 .point{
-    position:absolute;
-    color: lime;
+    color: lightgreen;
+    border:none;
     padding:none;
     margin:none;
     min-width: 200px;
 }
 .time{
-    position:absolute;
-    color:lightskyblue;
+    color:lightgray;
+    border:none;
+    padding:none;
+    margin:none;
+    min-width: 200px;
+}
+.feature{
+    display:none;
+    color: red;
+    border:none;
     padding:none;
     margin:none;
     min-width: 200px;
 }
 .description{
-    position:absolute;
-    color: lightsalmon;
-    border: 2px dashed lightsteelblue;
+    color: lightgoldenrodyellow;
+    border: 2px dashed lightpink;
     padding:none;
     margin:none;
     text-align: justify;
     min-width: 100px;
+    overflow: auto;
 }
-.button{
-    position:absolute;
-    display:flex;
-    flex-flow:row nowrap;
-    justify-content: space-between;
+@keyframes Dropdown{
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
 }
-.adjust{
-    position:absolute;
-    display:flex;
-    flex-flow:row nowrap;
-    justify-content: space-between;
+@keyframes Scaleout{
+    0%{transform: scale(1);opacity:1}
+    80%{transform: scale(10);opacity:0.1}
+    100%{transform: scale(10);opacity:0}
 }
+@keyframes Fadein{
+    from{opacity:0}
+    to{opacity:1;}
+}
+@keyframes Fadeout{
+    from{opacity:1}
+    to{opacity:0}
+}
+@keyframes Freezeout{
+    from{transform:scale(1); opacity:1}
+    to{transform:scale(100); opacity:0}
+}
+@keyframes Superstrong{
+    from{transform:scale(1)}
+    to{transform:scale(1.5)}
+}
+@keyframes Normalize{
+    from{transform:scale(1.5)}
+    to{transform:scale(1)}
+}
+@keyframes Superscale{
+    0%{transform: scale(1);opacity:1}
+    80%{transform: scale(20);opacity:0.1}
+    100%{transform: scale(20);opacity:0}
+}
+
