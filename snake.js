@@ -2360,8 +2360,8 @@ fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/super/1',{method:'GET'})
     .then(res=>res.json())
     .then(res=>{highScoreSuper=res.highScore.split(',')})
 
-let menuSound= new Audio('sound/mainTrack.mp3')
-let playSound= new Audio('sound/track2.mp3')
+let menuSound= new Audio('./sound/mainTrack.mp3')
+let playSound= new Audio('./sound/track2.mp3')
 menuSound.loop=true
 playSound.loop=true
 window.addEventListener('click',function playMenuSound(){
