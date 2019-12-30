@@ -575,8 +575,6 @@ function check(){
                 else if(mode==='war'){newSquare.style.backgroundColor='black'}
                 else if(mode==='super'){newSquare.style.backgroundColor='lightcoral'}
                 else{newSquare.style.backgroundColor='lightcoral'}
-                // newSquare.style.top=position[square.length-1+i].top+'px'
-                // newSquare.style.left=position[square.length-1+i].left+'px'
                 }
             redraw()
             if(action.length-realActionLength<n){action.length+=n-(action.length-realActionLength)}
