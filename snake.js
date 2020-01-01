@@ -50,12 +50,15 @@ let pause=document.querySelector('.pause')
 let reset=document.querySelector('.reset')
 let exit=document.querySelector('.exit')
 let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,superStrong=false,laserEye=false,bombEater=false,mindControl=false
-let zombieDuration=0,bomb=0,bombDelay=1000,freeze=false,freezeDuration=2000,enemyRespawnTime=5000
-let foeRunIndex,foeBlinkIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
-let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,explosionIndex,superDuration=5000,foeRespawnTime=5000
-let brickGapLength=5,brickWallSpeed=500,brickWaveSpeed=5000,brickWaveIndex
+let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bombDelay=1000
+let zombieDuration=0,bomb=0,freeze=false
+let zombieCondition=15000,enemyNumber=4,freezeDuration=2000,enemyRespawnTime=5000
+let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
+let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType
+let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRespawnTime=5000
+let brickWallIndex,brickWaveIndex,press=false
+let brickGapLength=5,brickWallSpeed=1000,brickWaveSpeed=5000,pressDelay=1000
 let canvasHeight=Math.floor(window.innerHeight/20)*20, canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20, canvasTop=0, canvasLeft=0
-let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, foeSpeed=300, foeBlinkDelay=2000, zombieCondition=15000, enemyNumber=4, explosionDelay=2000
 let action=new Array(square.length+n+1)
 let position=new Array(square.length+n+1)
 let move={
@@ -594,7 +597,7 @@ function normal(){
     if(lost){lose()}
     }
 function unblock(){
-    Object.values(canvas.children).forEach(x=>{if(x!==food){
+    Object.values(canvas.children).forEach(x=>{if(x!==food&&x.className!=='brick'){
                                                     if(x.offsetTop<=canvasTop-20){x.style.top=(canvasTop+canvasHeight-20)+'px'}
                                                     if(x.offsetTop>=canvasTop+canvasHeight){x.style.top=canvasTop+'px'}
                                                     if(x.offsetLeft<=canvasLeft-20){x.style.left=(canvasLeft+canvasWidth-20)+'px'}
@@ -717,11 +720,18 @@ if(!foeMindControl){
     }
 }
 function run(){
-    if(!foeMindControl){
-        if(action[0]){
-            step(action[0])
-            if(mindControl){foeStep(action[0])}
-            }
+    if(mode==='angry'){
+        if(!press){
+            Object.values(square).forEach(x=>x.style.top=(x.offsetTop+20)+'px')
+            if(main.offsetTop>(canvasTop+canvasHeight-20)){lose()}
+        }
+    }else{
+        if(!foeMindControl){
+            if(action[0]){
+                step(action[0])
+                if(mindControl){foeStep(action[0])}
+                }
+        }
     }
     now+=speed
     if(style==='survivor'){
@@ -1794,6 +1804,29 @@ function explosion(){
         })
     }
     }
+function angryKeydown(e){
+    if(e.key===' '){
+        press=true
+        let pressTime=0
+        let pressIndex=setInterval(function(){
+            if(isRunning){pressTime+=100}
+            if(pressTime>=pressDelay){
+                press=false
+                document.body.removeEventListener('keydown',checkPress,false)
+                clearInterval(pressIndex)
+            }
+        },100)
+        document.body.addEventListener('keydown',function checkPress(e){
+            if(e.key===' '){
+                clearInterval(pressIndex)
+                document.body.removeEventListener('keydown',checkPress,false)
+            }
+        },false)
+        if(main.offsetTop===canvasTop){return}
+        Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')
+        if(main.offsetTop>(canvasTop+canvasHeight-20)){lose()}
+    }
+}
 function brickWave(){
     let brickWall=[]
     let brickNumber=Math.floor(canvasHeight/20)
@@ -1815,15 +1848,16 @@ function brickWave(){
     for(let i=0; i<brickGapLength;i++){
         brickWall[brickGapIndex+i].remove()
     }
-    let brickWallIndex=setInterval(function(){
-        if(isRunning){
-        for(let i=0; i<brickWall.length; i++){
-            if(brickWall[i]){brickWall[i].style.left=(brickWall[i].offsetLeft-20)+'px'}
-            }
-        if(mainBrick.offsetLeft<canvasLeft){clearInterval(brickWallIndex)}
+    }
+function brickWall(){
+        let bricks=document.querySelectorAll('.brick')
+        if(bricks){
+            Object.values(bricks).forEach(x=>{
+                x.style.left=(x.offsetLeft-20)+'px'
+                if(x.offsetLeft<canvasLeft){x.remove()}
+            })
         }
-    },brickWallSpeed)
-}
+    }
 function foodDefault(){
     let bricks=document.querySelectorAll('.brick')
     food.style.top=canvasTop+Math.floor(Math.random()*(canvasHeight/20))*20+'px'
@@ -1843,7 +1877,13 @@ function foodDefault(){
     return
     }
 function begin(){
-    document.body.addEventListener('keydown',keydown,false)
+    if(mode==='angry'){
+        brickWaveIndex=setInterval(brickWave,brickWaveSpeed)
+        brickWallIndex=setInterval(brickWall,brickWallSpeed)
+        document.body.addEventListener('keydown',angryKeydown,false)
+    }else{
+        document.body.addEventListener('keydown',keydown,false)
+    }
     runIndex=setInterval(run,speed)
     blinkIndex=setInterval(blink,blinkDelay)
     if(mode==='super'){
@@ -1854,18 +1894,17 @@ function begin(){
         foeBlinkIndex=setInterval(foeBlink,foeBlinkDelay)
         explosionIndex=setInterval(explosion,explosionDelay)    
     }
-    if(mode==='angry'){
-        brickWaveIndex=setInterval(brickWave,brickWaveSpeed)
-    }
     }
 function end(){
     document.body.removeEventListener('keydown',keydown,false)
+    document.body.removeEventListener('keydown',angryKeydown,false)
     if(runIndex){clearInterval(runIndex)}
     if(blinkIndex){clearInterval(blinkIndex)}
     if(foeRunIndex){clearInterval(foeRunIndex)}
     if(foeBlinkIndex){clearInterval(foeBlinkIndex)}
     if(explosionIndex){clearInterval(explosionIndex)}
     if(brickWaveIndex){clearInterval(brickWaveIndex)}
+    if(brickWallIndex){clearInterval(brickWallIndex)}
     }
 function setDefault(){
     let bricks=document.querySelectorAll('.brick')
@@ -2173,7 +2212,8 @@ function updateScore(){
     }
 function lose(){
     if(!stop){
-        stepBack()
+        if(mode==='angry'){Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')}
+        else{stepBack()}
         emo.textContent='X'
         emo.style.top='-1px'
         emo.style.left='3px'
@@ -2329,8 +2369,8 @@ modeAngry.addEventListener('click',function(){
     labelEnemySpeed.style.display='block'
     labelMap.style.display='none'
     labelUnbound.style.display='none'
-    swiftCrawl.style.display='none'
-    swiftWalk.style.display='none'
+    swiftCrawl.style.display='block'
+    swiftWalk.style.display='block'
     swiftRun.style.display='block'
     swiftFly.style.display='block'
     swiftSpeedster.style.display='block'
