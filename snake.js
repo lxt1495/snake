@@ -57,7 +57,7 @@ let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false
 let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType
 let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRespawnTime=5000
 let brickWallIndex,brickWaveIndex,press=false
-let brickGapLength=5,brickWallSpeed=1000,brickWaveSpeed=5000,pressDelay=1000
+let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=200
 let canvasHeight=Math.floor(window.innerHeight/20)*20, canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20, canvasTop=0, canvasLeft=0
 let action=new Array(square.length+n+1)
 let position=new Array(square.length+n+1)
@@ -1812,7 +1812,6 @@ function angryKeydown(e){
             if(isRunning){pressTime+=100}
             if(pressTime>=pressDelay){
                 press=false
-                document.body.removeEventListener('keydown',checkPress,false)
                 clearInterval(pressIndex)
             }
         },100)
