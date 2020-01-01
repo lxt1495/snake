@@ -434,6 +434,13 @@ function draw(){
             }
         }    
         }
+    if(foeMindControl){
+        emo.textContent='@'
+        emo.style.top='-1.5px'
+        emo.style.left='-0.5px'
+        emo.style.display='block'
+        eyeBall.style.display='none'
+        }
     }
 function redraw(){
     square=document.querySelectorAll('.square')
@@ -1030,7 +1037,14 @@ function foeDraw(target){
                 laser.style.width=(brickBlock.offsetLeft-foeMain.offsetLeft)+'px'
                 }
         }
-    }    
+    }
+    if(mindControl){
+        foeEmo.textContent='@'
+        foeEmo.style.top='-1.5px'
+        foeEmo.style.left='-0.5px'
+        foeEmo.style.display='block'
+        foeEyeBall.style.display='none'
+        }    
     }
 function superCheck(){
     if(superStrong&&!foeStop){
@@ -1700,8 +1714,15 @@ function explosion(){
     let bombExplode=document.createElement('div')
     canvas.appendChild(bombExplode)
     bombExplode.className='bomb'
-    bombExplode.style.top=canvasTop+Math.floor(Math.random()*(canvasHeight/20))*20+'px'
-    bombExplode.style.left=canvasLeft+Math.floor(Math.random()*(canvasWidth/20))*20+'px'
+    while(true){
+        let breakable=true
+        bombExplode.style.top=canvasTop+Math.floor(Math.random()*(canvasHeight/20))*20+'px'
+        bombExplode.style.left=canvasLeft+Math.floor(Math.random()*(canvasWidth/20))*20+'px'
+        let bricks=document.querySelectorAll('.brick')
+        if(bricks){Object.values(bricks).forEach(x=>{if(x&&x.offsetTop===bombExplode.offsetTop&&x.offsetLeft===bombExplode.offsetLeft){breakable=false}})}
+        if(bombExplode.offsetTop===food.offsetTop&&bombExplode.offsetLeft===food.offsetLeft){breakable=false}
+        if(breakable){break}
+    }
     setTimeout(function(){
         bombExplode.style.animation='Scaleout 1s'
         setTimeout(function(){bombExplode.remove()},1000)
