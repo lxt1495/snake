@@ -11,6 +11,7 @@ let modeNormal=document.querySelector('.mode-normal')
 let modeZombie=document.querySelector('.mode-zombie')
 let modeWar=document.querySelector('.mode-war')
 let modeSuper=document.querySelector('.mode-super')
+let modeAngry=document.querySelector('.mode-angry')
 let gameStyle=document.querySelector('.game-style')
 let styleSurvivor=document.querySelector('.style-survivor')
 let styleTimer=document.querySelector('.style-timer')
@@ -48,9 +49,11 @@ let description=document.querySelector('.description')
 let pause=document.querySelector('.pause')
 let reset=document.querySelector('.reset')
 let exit=document.querySelector('.exit')
-let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,zombieDuration=0,bomb=0,freeze=false,superStrong=false,laserEye=false,bombEater=false,mindControl=false
+let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,superStrong=false,laserEye=false,bombEater=false,mindControl=false
+let zombieDuration=0,bomb=0,bombDelay=1000,freeze=false,freezeDuration=2000,enemyRespawnTime=5000
 let foeRunIndex,foeBlinkIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
-let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,explosionIndex
+let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,explosionIndex,superDuration=5000,foeRespawnTime=5000
+let brickGapLength=5,brickWallSpeed=500,brickWaveSpeed=5000,brickWaveIndex
 let canvasHeight=Math.floor(window.innerHeight/20)*20, canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20, canvasTop=0, canvasLeft=0
 let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, foeSpeed=300, foeBlinkDelay=2000, zombieCondition=15000, enemyNumber=4, explosionDelay=2000
 let action=new Array(square.length+n+1)
@@ -457,13 +460,20 @@ function check(){
                 else{n=0}
                 feature.textContent=`Bomb-Count: ${bomb}`
                 freeze=true
-                setTimeout(function(){freeze=false},2000)
+                let freezeTime=0
+                let freezeIndex=setInterval(function(){
+                    if(isRunning){freezeTime+=100}
+                    if(freezeTime>=freezeDuration){
+                        freeze=false
+                        clearInterval(freezeIndex)}
+                },100)
                 food.style.animation='Freezeout 0.5s'
                 setTimeout(function(){
                     food.style.animation=''
                     foodDefault()
                 },500)
             }else if(mode==='super'){
+                let superTime=0
                 food.style.left='-999px'
                 if(foodType==='strong'){
                     superStrong=true
@@ -471,24 +481,15 @@ function check(){
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='green'
                     Object.values(square).forEach(x=>{x.style.animation='Superstrong 1s';x.style.transform='scale(1.5)';x.style.backgroundColor='green'})
-                    let superStrongTimeout=setTimeout(function(){
-                        foodDefault()
-                        superStrong=false
-                        feature.textContent='Super-Power:'
-                        feature.style.animation=''
-                        eyeBall.style.backgroundColor='black'
-                        Object.values(square).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightcoral'})
-                        clearInterval(superStrongInterval)
-                    },5000)
                     let superStrongInterval=setInterval(function(){
-                        if(stop){
+                        if(isRunning){superTime+=100}
+                        if(superTime>=superDuration||stop){
                             foodDefault()
                             superStrong=false
                             feature.textContent='Super-Power:'
                             feature.style.animation=''    
                             eyeBall.style.backgroundColor='black'
                             Object.values(square).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightcoral'})
-                            clearTimeout(superStrongTimeout)
                             clearInterval(superStrongInterval)}
                     },100)}
                 if(foodType==='laser'){
@@ -496,22 +497,14 @@ function check(){
                     feature.textContent='Super-Power: LaserEye'
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='red'
-                    let laserTimeout=setTimeout(function(){
-                        foodDefault()
-                        laserEye=false
-                        feature.textContent='Super-Power:'
-                        feature.style.animation=''
-                        eyeBall.style.backgroundColor='black'
-                        clearInterval(laserInterval)
-                    },5000)
                     let laserInterval=setInterval(function(){
-                        if(stop){
+                        if(isRunning){superTime+=100}
+                        if(superTime>=superDuration||stop){
                             foodDefault()
                             laserEye=false
                             feature.textContent='Super-Power:'
                             feature.style.animation=''
                             eyeBall.style.backgroundColor='black'    
-                            clearTimeout(laserTimeout)
                             clearInterval(laserInterval)}
                     },100)}
                 if(foodType==='bomb'){
@@ -520,24 +513,15 @@ function check(){
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='purple'
                     Object.values(square).forEach(x=>x.style.backgroundColor='red')
-                    let bombTimeout=setTimeout(function(){
-                        foodDefault()
-                        bombEater=false
-                        feature.textContent='Super-Power:'
-                        feature.style.animation=''
-                        eyeBall.style.backgroundColor='black'
-                        Object.values(square).forEach(x=>x.style.backgroundColor='lightcoral')
-                        clearInterval(bombInterval)
-                    },5000)
                     let bombInterval=setInterval(function(){
-                        if(stop){
+                        if(isRunning){superTime+=100}
+                        if(superTime>=superDuration||stop){
                             foodDefault()
                             bombEater=false
                             feature.textContent='Super-Power:'
                             feature.style.animation=''
                             eyeBall.style.backgroundColor='black'
                             Object.values(square).forEach(x=>x.style.backgroundColor='lightcoral')    
-                            clearTimeout(bombTimeout)
                             clearInterval(bombInterval)}
                     },100)}
                 if(foodType==='mind'){
@@ -545,22 +529,14 @@ function check(){
                     feature.textContent='Super-Power: MindControl'
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='purple'
-                    let mindTimeout=setTimeout(function(){
-                        foodDefault()
-                        mindControl=false
-                        feature.textContent='Super-Power:'
-                        feature.style.animation=''
-                        eyeBall.style.backgroundColor='black'
-                        clearInterval(mindInterval)
-                    },5000)
                     let mindInterval=setInterval(function(){
-                        if(stop){
+                        if(isRunning){superTime+=100}
+                        if(superTime>=superDuration||stop){
                             foodDefault()
                             mindControl=false
                             feature.textContent='Super-Power:'
                             feature.style.animation=''
                             eyeBall.style.backgroundColor='black'    
-                            clearTimeout(mindTimeout)
                             clearInterval(mindInterval)}
                     },100)}
             }
@@ -605,13 +581,8 @@ function check(){
             }
         })
     if(lost){lose()}
-    if(mode==='war'){
-        let enemy=document.querySelectorAll('.enemy')
-        Object.values(enemy).forEach(x=>{if(x){checkEnemy(x)}})
-        }
-    if(mode==='super'){
-        superCheck()
-        }
+    if(mode==='war'){warCheck()}
+    if(mode==='super'){superCheck()}
     }
 function normal(){
     let lost=false
@@ -691,52 +662,55 @@ if(!foeMindControl){
                 bombExplode.className='bomb'
                 bombExplode.style.top=main.offsetTop+'px'
                 bombExplode.style.left=main.offsetLeft+'px'
-                setTimeout(function(){
-                    bombExplode.style.animation='Scaleout 1s'
-                    setTimeout(function(){bombExplode.remove()},1000)
-                    setTimeout(function(){
-                        let lost=false
-                        Object.values(canvas.children).forEach(x=>{
-                            if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
-                                &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
-                                &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
-                                &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
-                                {
-                                    if(x===main||x.className==='square'){lost=true}
-                                    if(x.className==='square bombcarrier'){x.remove()}
-                                    if(x===food){foodDefault()}
-                                    if(x.className==='enemy'){
-                                        score+=1
-                                        point.textContent=`Score: ${score}`
-                                        x.style.animation='Fadeout 0.2s'
-                                        setTimeout(function(){x.remove()},200)
-                                        let enemyTimeout=setTimeout(function(){
-                                                    let newEnemy=document.createElement('div')
-                                                    canvas.appendChild(newEnemy)
-                                                    newEnemy.className='enemy'
-                                                    enemyDefault(newEnemy)
-                                                    clearInterval(enemyInterval)
-                                                },5000)
-                                        let enemyInterval=setInterval(function(){
-                                                    if(stop){
-                                                        clearTimeout(enemyTimeout)
-                                                        clearInterval(enemyInterval)
-                                                    }
-                                                },100)                       
+                let bombExplodeTime=0
+                let bombExplodeIndex=setInterval(function(){
+                    if(isRunning){bombExplodeTime+=100}
+                    if(bombExplodeTime>=bombDelay){
+                        bombExplode.style.animation='Scaleout 1s'
+                        setTimeout(function(){bombExplode.remove()},1000)
+                        setTimeout(function(){
+                            let lost=false
+                            Object.values(canvas.children).forEach(x=>{
+                                if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
+                                    &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
+                                    &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
+                                    &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
+                                    {
+                                        if(x===main||x.className==='square'){lost=true}
+                                        if(x.className==='square bombcarrier'){x.remove()}
+                                        if(x===food){foodDefault()}
+                                        if(x.className==='enemy'){
+                                            score+=1
+                                            point.textContent=`Score: ${score}`
+                                            x.style.animation='Fadeout 0.2s'
+                                            setTimeout(function(){x.remove()},200)
+                                            let enemyTime=0
+                                            let enemyInterval=setInterval(function(){
+                                                        if(isRunning){enemyTime+=100}
+                                                        if(enemyTime>=enemyRespawnTime||stop){
+                                                            let newEnemy=document.createElement('div')
+                                                            canvas.appendChild(newEnemy)
+                                                            newEnemy.className='enemy'
+                                                            enemyDefault(newEnemy)    
+                                                            clearInterval(enemyInterval)
+                                                        }
+                                                    },100)                       
+                                        }
+                                        if(x.className==='brick'){
+                                            x.style.animation='Fadeout 0.7s'
+                                            setTimeout(function(){x.remove()},700)
+                                        }
                                     }
-                                    if(x.className==='brick'){
-                                        x.style.animation='Fadeout 0.7s'
-                                        setTimeout(function(){x.remove()},700)
-                                    }
-                                }
-                            })
-                        square=document.querySelectorAll('.square')
-                        bomb=square.length-3
-                        feature.textContent=`Bomb-Count: ${bomb}`
-                        if(lost)(lose())
-                        else(redraw())    
-                    },300)
-                },1000)
+                                })
+                            square=document.querySelectorAll('.square')
+                            bomb=square.length-3
+                            feature.textContent=`Bomb-Count: ${bomb}`
+                            if(lost)(lose())
+                            else(redraw())    
+                        },300)
+                        clearInterval(bombExplodeIndex)
+                    }
+                },100)
             }
         }
         }
@@ -777,16 +751,16 @@ function run(){
                     move.up(x)
                     if(x.offsetLeft>main.offsetLeft){move.left(x)}
                     if(x.offsetLeft<main.offsetLeft){move.right(x)}
-                    checkEnemy(x)
+                    warCheck()
                 }else if(x.offsetTop<main.offsetTop){
                     move.down(x)
                     if(x.offsetLeft>main.offsetLeft){move.left(x)}
                     if(x.offsetLeft<main.offsetLeft){move.right(x)}
-                    checkEnemy(x)
+                    warCheck()
                 }else{
                     if(x.offsetLeft>main.offsetLeft){move.left(x)}
                     if(x.offsetLeft<main.offsetLeft){move.right(x)}
-                    checkEnemy(x)
+                    warCheck()
                 }
                 Object.values(enemy).forEach((y,j)=>{
                     if(y&&i!==j&&x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){enemyDefault(x)}
@@ -799,6 +773,156 @@ function run(){
 function blink(){
     eyeCover.style.maxHeight=eye.offsetHeight+'px'
     setTimeout(function(){eyeCover.style.maxHeight=0},100)
+    }
+function warCheck(){
+    let lost=false
+    let enemy=document.querySelectorAll('.enemy')
+    if(enemy){
+        Object.values(enemy).forEach(x=>{
+            Object.values(square).forEach(y=>{if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){lost=true}})
+        })
+        }
+    if(lost){lose()}
+    }
+function enemyDefault(newEnemy){
+    if(newEnemy){
+        let bricks=document.querySelectorAll('.brick')
+        newEnemy.style.top=canvasTop+Math.floor(Math.random()*(canvasHeight/20))*20+'px'
+        newEnemy.style.left=canvasLeft+Math.floor(Math.random()*(canvasWidth/20))*20+'px'
+        if(newEnemy.offsetTop===food.offsetTop&&newEnemy.offsetLeft===food.offsetLeft){enemyDefault(newEnemy)}
+        if(bricks){Object.values(bricks).forEach(x=>{if(x&&x.offsetTop===newEnemy.offsetTop&&x.offsetLeft===newEnemy.offsetLeft){enemyDefault(newEnemy)}})}
+        Object.values(square).forEach(x=>{
+            if(x&&newEnemy.offsetTop>=x.offsetTop-Math.floor((canvasHeight/20)/3)*20
+                &&newEnemy.offsetTop<=x.offsetTop+Math.floor((canvasHeight/20)/3)*20
+                &&newEnemy.offsetLeft>=x.offsetLeft-Math.floor((canvasWidth/20)/3)*20
+                &&newEnemy.offsetLeft<=x.offsetLeft+Math.floor((canvasWidth/20)/3)*20){enemyDefault(newEnemy)}
+        })
+        return
+    }
+    }
+function superCheck(){
+    if(superStrong&&!foeStop){
+        let foeLost=false
+        Object.values(square).forEach(x=>{
+            Object.values(foe).forEach(y=>{
+                if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){foeLost=true}
+            })
+        })
+        if(foeLost){foeDead()}
+        }
+    if(foeSuperStrong){
+        let lost=false
+        Object.values(square).forEach(x=>{
+            Object.values(foe).forEach(y=>{
+                if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){lost=true}
+            })
+        })
+        if(lost){lose()}
+        }
+    if(laserEye&&!foeStop){
+        let bricks=document.querySelectorAll('.brick')
+        let brickBlock=null
+        if(action[0]===move.up){
+            let foeLost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft&&x.offsetTop>brickBlock.offsetTop){brickBlock=x}})
+                }
+            Object.values(foe).forEach(x=>{
+                if(brickBlock){if(x.offsetTop>brickBlock.offsetTop&&x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
+                else{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
+                })
+            if(foeLost){foeDead()}
+            }
+        if(action[0]===move.down){
+            let foeLost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft&&x.offsetTop<brickBlock.offsetTop){brickBlock=x}})
+                }
+            Object.values(foe).forEach(x=>{
+                if(brickBlock){if(x.offsetTop<brickBlock.offsetTop&&x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
+                else{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
+                })
+            if(foeLost){foeDead()}
+            }
+        if(action[0]===move.left){
+            let foeLost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft&&x.offsetLeft>brickBlock.offsetLeft){brickBlock=x}})
+            }
+            Object.values(foe).forEach(x=>{
+                if(brickBlock){if(x.offsetLeft>brickBlock.offsetLeft&&x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){foeLost=true}}
+                else{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){foeLost=true}}
+                })
+            if(foeLost){foeDead()}
+            }
+        if(action[0]===move.right){
+            let foeLost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft&&x.offsetLeft<brickBlock.offsetLeft){brickBlock=x}})
+            }
+            Object.values(foe).forEach(x=>{
+                if(brickBlock){if(x.offsetLeft<brickBlock.offsetLeft&&x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){foeLost=true}}
+                else{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){foeLost=true}}
+                })
+            if(foeLost){foeDead()}
+            }
+        }
+    if(foeLaserEye){
+        let bricks=document.querySelectorAll('.brick')
+        let brickBlock=null
+        if(foeAction[0]===move.up){
+            let lost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft&&x.offsetTop>brickBlock.offsetTop){brickBlock=x}})
+            }
+            Object.values(square).forEach(x=>{
+                if(brickBlock){if(x.offsetTop>brickBlock.offsetTop&&x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
+                else{if(x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
+            })
+            if(lost){lose()}
+        }
+        if(foeAction[0]===move.down){
+            let lost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft&&x.offsetTop<brickBlock.offsetTop){brickBlock=x}})
+            }
+            Object.values(square).forEach(x=>{
+                if(brickBlock){if(x.offsetTop<brickBlock.offsetTop&&x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
+                else{if(x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
+            })
+            if(lost){lose()}
+        }
+        if(foeAction[0]===move.left){
+            let lost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft&&x.offsetLeft>brickBlock.offsetLeft){brickBlock=x}})
+            }
+            Object.values(square).forEach(x=>{
+                if(brickBlock){if(x.offsetLeft>brickBlock.offsetLeft&&x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft){lost=true}}
+                else{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft){lost=true}}
+            })
+            if(lost){lose()}
+        }
+        if(foeAction[0]===move.right){
+            let lost=false
+            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft){brickBlock=x}})}
+            if(brickBlock){
+                Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft&&x.offsetLeft<brickBlock.offsetLeft){brickBlock=x}})
+            }
+            Object.values(square).forEach(x=>{
+                if(brickBlock){if(x.offsetLeft<brickBlock.offsetLeft&&x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft){lost=true}}
+                else{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft){lost=true}}
+            })
+            if(lost){lose()}
+        }
+        }    
     }
 function foeDraw(target){
     foe=document.querySelectorAll('.foe')
@@ -1046,132 +1170,9 @@ function foeDraw(target){
         foeEyeBall.style.display='none'
         }    
     }
-function superCheck(){
-    if(superStrong&&!foeStop){
-        let foeLost=false
-        Object.values(square).forEach(x=>{
-            Object.values(foe).forEach(y=>{
-                if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){foeLost=true}
-            })
-        })
-        if(foeLost){foeDead()}
-        }
-    if(foeSuperStrong){
-        let lost=false
-        Object.values(square).forEach(x=>{
-            Object.values(foe).forEach(y=>{
-                if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){lost=true}
-            })
-        })
-        if(lost){lose()}
-        }
-    if(laserEye&&!foeStop){
-        let bricks=document.querySelectorAll('.brick')
-        let brickBlock=null
-        if(action[0]===move.up){
-            let foeLost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft&&x.offsetTop>brickBlock.offsetTop){brickBlock=x}})
-                }
-            Object.values(foe).forEach(x=>{
-                if(brickBlock){if(x.offsetTop>brickBlock.offsetTop&&x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
-                else{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
-                })
-            if(foeLost){foeDead()}
-            }
-        if(action[0]===move.down){
-            let foeLost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft&&x.offsetTop<brickBlock.offsetTop){brickBlock=x}})
-                }
-            Object.values(foe).forEach(x=>{
-                if(brickBlock){if(x.offsetTop<brickBlock.offsetTop&&x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
-                else{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
-                })
-            if(foeLost){foeDead()}
-            }
-        if(action[0]===move.left){
-            let foeLost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft&&x.offsetLeft>brickBlock.offsetLeft){brickBlock=x}})
-            }
-            Object.values(foe).forEach(x=>{
-                if(brickBlock){if(x.offsetLeft>brickBlock.offsetLeft&&x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){foeLost=true}}
-                else{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){foeLost=true}}
-                })
-            if(foeLost){foeDead()}
-            }
-        if(action[0]===move.right){
-            let foeLost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft&&x.offsetLeft<brickBlock.offsetLeft){brickBlock=x}})
-            }
-            Object.values(foe).forEach(x=>{
-                if(brickBlock){if(x.offsetLeft<brickBlock.offsetLeft&&x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){foeLost=true}}
-                else{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){foeLost=true}}
-                })
-            if(foeLost){foeDead()}
-            }
-        }
-    if(foeLaserEye){
-        let bricks=document.querySelectorAll('.brick')
-        let brickBlock=null
-        if(foeAction[0]===move.up){
-            let lost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft&&x.offsetTop>brickBlock.offsetTop){brickBlock=x}})
-            }
-            Object.values(square).forEach(x=>{
-                if(brickBlock){if(x.offsetTop>brickBlock.offsetTop&&x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
-                else{if(x.offsetTop<foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
-            })
-            if(lost){lose()}
-        }
-        if(foeAction[0]===move.down){
-            let lost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft&&x.offsetTop<brickBlock.offsetTop){brickBlock=x}})
-            }
-            Object.values(square).forEach(x=>{
-                if(brickBlock){if(x.offsetTop<brickBlock.offsetTop&&x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
-                else{if(x.offsetTop>foeMain.offsetTop&&x.offsetLeft===foeMain.offsetLeft){lost=true}}
-            })
-            if(lost){lose()}
-        }
-        if(foeAction[0]===move.left){
-            let lost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft&&x.offsetLeft>brickBlock.offsetLeft){brickBlock=x}})
-            }
-            Object.values(square).forEach(x=>{
-                if(brickBlock){if(x.offsetLeft>brickBlock.offsetLeft&&x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft){lost=true}}
-                else{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft<foeMain.offsetLeft){lost=true}}
-            })
-            if(lost){lose()}
-        }
-        if(foeAction[0]===move.right){
-            let lost=false
-            if(bricks){Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft){brickBlock=x}})}
-            if(brickBlock){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft&&x.offsetLeft<brickBlock.offsetLeft){brickBlock=x}})
-            }
-            Object.values(square).forEach(x=>{
-                if(brickBlock){if(x.offsetLeft<brickBlock.offsetLeft&&x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft){lost=true}}
-                else{if(x.offsetTop===foeMain.offsetTop&&x.offsetLeft>foeMain.offsetLeft){lost=true}}
-            })
-            if(lost){lose()}
-        }
-        }    
-    }
 function foeCheck(){
     if(foeMain.offsetTop===food.offsetTop&&foeMain.offsetLeft===food.offsetLeft){
+            let superTime=0
             food.style.left='-999px'
             if(foodType==='strong'){
                 foeSuperStrong=true
@@ -1179,24 +1180,15 @@ function foeCheck(){
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='green'
                 Object.values(foe).forEach(x=>{x.style.animation='Superstrong 1s';x.style.transform='scale(1.5)';x.style.backgroundColor='green'})
-                let superStrongTimeout=setTimeout(function(){
-                    foodDefault()
-                    foeSuperStrong=false
-                    feature.textContent='Super-Power:'
-                    feature.style.animation=''
-                    foeEyeBall.style.backgroundColor='black'
-                    Object.values(foe).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightsalmon'})
-                    clearInterval(superStrongInterval)
-                },5000)
                 let superStrongInterval=setInterval(function(){
-                    if(stop){
+                    if(isRunning){superTime+=100}
+                    if(superTime>=superDuration||stop){
                         foodDefault()
                         foeSuperStrong=false
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
                         foeEyeBall.style.backgroundColor='black'
                         Object.values(foe).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightsalmon'})    
-                        clearTimeout(superStrongTimeout)
                         clearInterval(superStrongInterval)}
                 },100)
             }
@@ -1205,22 +1197,14 @@ function foeCheck(){
                 feature.textContent='Enemy-Power: LaserEye'
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='red'
-                let laserTimeout=setTimeout(function(){
-                    foodDefault()
-                    foeLaserEye=false
-                    feature.textContent='Super-Power:'
-                    feature.style.animation=''
-                    foeEyeBall.style.backgroundColor='black'
-                    clearInterval(laserInterval)
-                },5000)
                 let laserInterval=setInterval(function(){
-                    if(stop){
+                    if(isRunning){superTime+=100}
+                    if(superTime>=superDuration||stop){
                         foodDefault()
                         foeLaserEye=false
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
                         foeEyeBall.style.backgroundColor='black'    
-                        clearTimeout(laserTimeout)
                         clearInterval(laserInterval)}
                 },100)
             }
@@ -1230,24 +1214,15 @@ function foeCheck(){
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='purple'
                 Object.values(foe).forEach(x=>x.style.backgroundColor='red')
-                let bombTimeout=setTimeout(function(){
-                    foodDefault()
-                    foeBombEater=false
-                    feature.textContent='Super-Power:'
-                    feature.style.animation=''
-                    foeEyeBall.style.backgroundColor='black'
-                    Object.values(foe).forEach(x=>x.style.backgroundColor='lightsalmon')
-                    clearInterval(bombInterval)
-                },5000)
                 let bombInterval=setInterval(function(){
-                    if(stop){
+                    if(isRunning){superTime+=100}
+                    if(superTime>=superDuration||stop){
                         foodDefault()
                         foeBombEater=false
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
                         foeEyeBall.style.backgroundColor='black'
                         Object.values(foe).forEach(x=>x.style.backgroundColor='lightsalmon')    
-                        clearTimeout(bombTimeout)
                         clearInterval(bombInterval)}
                 },100)}
             if(foodType==='mind'){
@@ -1255,22 +1230,14 @@ function foeCheck(){
                 feature.textContent='Enemy-Power: MindControl'
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='purple'
-                let mindTimeout=setTimeout(function(){
-                    foodDefault()
-                    foeMindControl=false
-                    feature.textContent='Super-Power:'
-                    feature.style.animation=''
-                    foeEyeBall.style.backgroundColor='black'
-                    clearInterval(mindInterval)
-                },5000)
                 let mindInterval=setInterval(function(){
-                    if(stop){
+                    if(isRunning){superTime+=100}
+                    if(superTime>=superDuration||stop){
                         foodDefault()
                         foeMindControl=false
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
                         foeEyeBall.style.backgroundColor='black'    
-                        clearTimeout(mindTimeout)
                         clearInterval(mindInterval)}
                 },100)}
         }
@@ -1703,11 +1670,16 @@ function foeDead(){
         point.textContent=`Score: ${score}`
         if(mindControl){mindControl=false}
         if(foeMindControl){foeMindControl=false}
-        setTimeout(function(){
-            foeDraw(food)
-            Object.values(foe).forEach(x=>x.style.animation='')
-            foeStop=false
-        },5000)
+        let foeDeadTime=0
+        let foeDeadIndex=setInterval(function(){
+            if(isRunning){foeDeadTime+=100}
+            if(foeDeadTime>=foeRespawnTime){
+                foeDraw(food)
+                Object.values(foe).forEach(x=>x.style.animation='')
+                foeStop=false
+                clearInterval(foeDeadIndex)
+            }
+        },100)
     }
     }
 function explosion(){
@@ -1723,97 +1695,135 @@ function explosion(){
         if(bombExplode.offsetTop===food.offsetTop&&bombExplode.offsetLeft===food.offsetLeft){breakable=false}
         if(breakable){break}
     }
-    setTimeout(function(){
-        bombExplode.style.animation='Scaleout 1s'
-        setTimeout(function(){bombExplode.remove()},1000)
-        setTimeout(function(){
-            let lost=false,foeLost=false
-            Object.values(canvas.children).forEach(x=>{
-                if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
-                    &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
-                    &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
-                    &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
-                    {
-                        if(x===main||x.className==='square'){if(!bombEater){lost=true}}
-                        if(x===foeMain||x.className==='foe'){if(!foeBombEater){foeLost=true}}
-                        if(x===food){foodDefault()}
+    let bombExplodeTime=0
+    let bombExplodeIndex=setInterval(function(){
+        if(isRunning){bombExplodeTime+=100}
+        if(bombExplodeTime>=bombDelay){
+            bombExplode.style.animation='Scaleout 1s'
+            setTimeout(function(){bombExplode.remove()},1000)
+            setTimeout(function(){
+                let lost=false,foeLost=false
+                Object.values(canvas.children).forEach(x=>{
+                    if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
+                        &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
+                        &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
+                        &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
+                        {
+                            if(x===main||x.className==='square'){if(!bombEater){lost=true}}
+                            if(x===foeMain||x.className==='foe'){if(!foeBombEater){foeLost=true}}
+                            if(x===food){foodDefault()}
+                        }
+                    })
+                if(lost){lose()}
+                if(foeLost){
+                    if(!mindControl){score-=1}
+                    foeDead()
                     }
-                })
-            if(lost){lose()}
-            if(foeLost){
-                if(!mindControl){score-=1}
-                foeDead()
-                }
-        },300)
-    },1000)
+            },300)
+            clearInterval(bombExplodeIndex)
+        }
+    },100)
     if(bombEater){
         Object.values(square).forEach(x=>{
+            let squareExplodeTime=0
             x.style.animation='Fadeout 0.2s infinite'
-            setTimeout(function(){
-                x.style.animation=''
-                x.style.opacity='1'
-                let squareExplode=document.createElement('div')
-                canvas.appendChild(squareExplode)
-                squareExplode.className='bomb'
-                squareExplode.style.top=x.offsetTop+'px'
-                squareExplode.style.left=x.offsetLeft+'px'
-                squareExplode.style.animation='Superscale 1s'        
-                setTimeout(function(){squareExplode.remove()},1000)
-                setTimeout(function(){
-                    let foeLost=false
-                    Object.values(canvas.children).forEach(y=>{
-                        if(y.offsetTop>=(squareExplode.offsetTop-squareExplode.offsetHeight*10)
-                            &&y.offsetTop<=(squareExplode.offsetTop+squareExplode.offsetHeight*10)
-                            &&y.offsetLeft>=(squareExplode.offsetLeft-squareExplode.offsetWidth*10)
-                            &&y.offsetLeft<=(squareExplode.offsetLeft+squareExplode.offsetWidth*10))
-                            {
-                                if(y===foeMain||y.className==='foe'){if(!foeBombEater){foeLost=true}}
-                                if(y===food){foodDefault()}
-                            }
-                        })
-                    if(foeLost){foeDead()}
-                },300)
-            },1000)    
+            let squareExplodeIndex=setInterval(function(){
+                if(isRunning){squareExplodeTime+=100}
+                if(squareExplodeTime>=bombDelay){
+                    x.style.animation=''
+                    x.style.opacity='1'
+                    let squareExplode=document.createElement('div')
+                    canvas.appendChild(squareExplode)
+                    squareExplode.className='bomb'
+                    squareExplode.style.top=x.offsetTop+'px'
+                    squareExplode.style.left=x.offsetLeft+'px'
+                    squareExplode.style.animation='Superscale 1s'        
+                    setTimeout(function(){squareExplode.remove()},1000)
+                    setTimeout(function(){
+                        let foeLost=false
+                        Object.values(canvas.children).forEach(y=>{
+                            if(y.offsetTop>=(squareExplode.offsetTop-squareExplode.offsetHeight*10)
+                                &&y.offsetTop<=(squareExplode.offsetTop+squareExplode.offsetHeight*10)
+                                &&y.offsetLeft>=(squareExplode.offsetLeft-squareExplode.offsetWidth*10)
+                                &&y.offsetLeft<=(squareExplode.offsetLeft+squareExplode.offsetWidth*10))
+                                {
+                                    if(y===foeMain||y.className==='foe'){if(!foeBombEater){foeLost=true}}
+                                    if(y===food){foodDefault()}
+                                }
+                            })
+                        if(foeLost){foeDead()}
+                    },300)
+                    clearInterval(squareExplodeIndex)
+                }
+            },100)    
         })
     }
     if(foeBombEater){
         Object.values(foe).forEach(x=>{
+            let foeExplodeTime=0
             x.style.animation='Fadeout 0.2s infinite'
-            setTimeout(function(){
-                x.style.animation=''
-                x.style.opacity='1'
-                let foeExplode=document.createElement('div')
-                canvas.appendChild(foeExplode)
-                foeExplode.className='bomb'
-                foeExplode.style.top=x.offsetTop+'px'
-                foeExplode.style.left=x.offsetLeft+'px'
-                foeExplode.style.animation='Superscale 1s'        
-                setTimeout(function(){foeExplode.remove()},1000)
-                setTimeout(function(){
-                    let lost=false
-                    Object.values(canvas.children).forEach(y=>{
-                        if(y.offsetTop>=(foeExplode.offsetTop-foeExplode.offsetHeight*10)
-                            &&y.offsetTop<=(foeExplode.offsetTop+foeExplode.offsetHeight*10)
-                            &&y.offsetLeft>=(foeExplode.offsetLeft-foeExplode.offsetWidth*10)
-                            &&y.offsetLeft<=(foeExplode.offsetLeft+foeExplode.offsetWidth*10))
-                            {
-                                if(y===main||y.className==='square'){if(!bombEater){lost=true}}
-                                if(y===food){foodDefault()}
-                            }
-                        })
-                    if(lost){lose()}
-                },300)
-            },1000)    
+            let foeExplodeIndex=setInterval(function(){
+                if(isRunning){foeExplodeTime+=100}
+                if(foeExplodeTime>=bombDelay){
+                    x.style.animation=''
+                    x.style.opacity='1'
+                    let foeExplode=document.createElement('div')
+                    canvas.appendChild(foeExplode)
+                    foeExplode.className='bomb'
+                    foeExplode.style.top=x.offsetTop+'px'
+                    foeExplode.style.left=x.offsetLeft+'px'
+                    foeExplode.style.animation='Superscale 1s'        
+                    setTimeout(function(){foeExplode.remove()},1000)
+                    setTimeout(function(){
+                        let lost=false
+                        Object.values(canvas.children).forEach(y=>{
+                            if(y.offsetTop>=(foeExplode.offsetTop-foeExplode.offsetHeight*10)
+                                &&y.offsetTop<=(foeExplode.offsetTop+foeExplode.offsetHeight*10)
+                                &&y.offsetLeft>=(foeExplode.offsetLeft-foeExplode.offsetWidth*10)
+                                &&y.offsetLeft<=(foeExplode.offsetLeft+foeExplode.offsetWidth*10))
+                                {
+                                    if(y===main||y.className==='square'){if(!bombEater){lost=true}}
+                                    if(y===food){foodDefault()}
+                                }
+                            })
+                        if(lost){lose()}
+                    },300)
+                    clearInterval(foeExplodeIndex)
+                }
+            },100)    
         })
     }
     }
-function checkEnemy(enemy){
-    let lost=false
-    if(enemy){
-        Object.values(square).forEach(x=>{if(x&&x.offsetTop===enemy.offsetTop&&x.offsetLeft===enemy.offsetLeft){lost=true}})
-        }
-    if(lost){lose()}
+function brickWave(){
+    let brickWall=[]
+    let brickNumber=Math.floor(canvasHeight/20)
+    let mainBrick=document.createElement('div')
+    canvas.appendChild(mainBrick)
+    mainBrick.className='brick'
+    mainBrick.style.top=canvasTop+'px'
+    mainBrick.style.left=(canvasLeft+canvasWidth-20)+'px'
+    brickWall.push(mainBrick)
+    for(let i=0; i<brickNumber-1;i++){
+        let brick=document.createElement('div')
+        canvas.appendChild(brick)
+        brick.className='brick'
+        brick.style.top=(mainBrick.offsetTop+(i+1)*20)+'px'
+        brick.style.left=mainBrick.offsetLeft+'px'
+        brickWall.push(brick)
     }
+    let brickGapIndex=Math.floor(Math.random()*(brickWall.length-brickGapLength))
+    for(let i=0; i<brickGapLength;i++){
+        brickWall[brickGapIndex+i].remove()
+    }
+    let brickWallIndex=setInterval(function(){
+        if(isRunning){
+        for(let i=0; i<brickWall.length; i++){
+            if(brickWall[i]){brickWall[i].style.left=(brickWall[i].offsetLeft-20)+'px'}
+            }
+        if(mainBrick.offsetLeft<canvasLeft){clearInterval(brickWallIndex)}
+        }
+    },brickWallSpeed)
+}
 function foodDefault(){
     let bricks=document.querySelectorAll('.brick')
     food.style.top=canvasTop+Math.floor(Math.random()*(canvasHeight/20))*20+'px'
@@ -1832,22 +1842,6 @@ function foodDefault(){
     }
     return
     }
-function enemyDefault(newEnemy){
-    if(newEnemy){
-        let bricks=document.querySelectorAll('.brick')
-        newEnemy.style.top=canvasTop+Math.floor(Math.random()*(canvasHeight/20))*20+'px'
-        newEnemy.style.left=canvasLeft+Math.floor(Math.random()*(canvasWidth/20))*20+'px'
-        if(newEnemy.offsetTop===food.offsetTop&&newEnemy.offsetLeft===food.offsetLeft){enemyDefault(newEnemy)}
-        if(bricks){Object.values(bricks).forEach(x=>{if(x&&x.offsetTop===newEnemy.offsetTop&&x.offsetLeft===newEnemy.offsetLeft){enemyDefault(newEnemy)}})}
-        Object.values(square).forEach(x=>{
-            if(x&&newEnemy.offsetTop>=x.offsetTop-Math.floor((canvasHeight/20)/3)*20
-                &&newEnemy.offsetTop<=x.offsetTop+Math.floor((canvasHeight/20)/3)*20
-                &&newEnemy.offsetLeft>=x.offsetLeft-Math.floor((canvasWidth/20)/3)*20
-                &&newEnemy.offsetLeft<=x.offsetLeft+Math.floor((canvasWidth/20)/3)*20){enemyDefault(newEnemy)}
-        })
-        return
-    }
-    }
 function begin(){
     document.body.addEventListener('keydown',keydown,false)
     runIndex=setInterval(run,speed)
@@ -1860,6 +1854,9 @@ function begin(){
         foeBlinkIndex=setInterval(foeBlink,foeBlinkDelay)
         explosionIndex=setInterval(explosion,explosionDelay)    
     }
+    if(mode==='angry'){
+        brickWaveIndex=setInterval(brickWave,brickWaveSpeed)
+    }
     }
 function end(){
     document.body.removeEventListener('keydown',keydown,false)
@@ -1868,6 +1865,7 @@ function end(){
     if(foeRunIndex){clearInterval(foeRunIndex)}
     if(foeBlinkIndex){clearInterval(foeBlinkIndex)}
     if(explosionIndex){clearInterval(explosionIndex)}
+    if(brickWaveIndex){clearInterval(brickWaveIndex)}
     }
 function setDefault(){
     let bricks=document.querySelectorAll('.brick')
@@ -1986,6 +1984,7 @@ function setDefault(){
         square = document.querySelectorAll('.square')
     }
     square = document.querySelectorAll('.square')
+    Object.values(square).forEach(x=>x.style.animation='')
     action=new Array(square.length+n+1)
     position=new Array(square.length+n+1)
     score=0
@@ -2042,7 +2041,7 @@ function setDefault(){
         feature.textContent='Super-Power:'
         foeAction=new Array(foe.length)
         foePosition=new Array(foe.length)
-        Object.values(foe).forEach(x=>x.style.display='block')
+        Object.values(foe).forEach(x=>{x.style.display='block';x.style.animation=''})
         Object.values(foe).forEach(x=>{x.style.top=(canvasTop+canvasHeight-20)+'px';x.style.left=(canvasLeft+canvasWidth-20)+'px'})
         for(let i=0; i<foe.length; i++){
             add(foeAction,move.left)
@@ -2051,11 +2050,17 @@ function setDefault(){
             add(foePosition,{top:foeMain.offsetTop,left:foeMain.offsetLeft})
             }    
         Object.values(foe).forEach(x=>{if(x){x.style.backgroundColor='lightsalmon'}})
-        foeEyeBall.style.backgroundColor='black'
+        foeEmo.style.display='none'
         foeEmo.style.color='black'    
+        foeEyeBall.style.display='block'    
+        foeEyeBall.style.backgroundColor='black'
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
+    }else if(mode==='angry'){
+        let bricks=document.querySelectorAll('.brick')
+        if(bricks){Object.values(bricks).forEach(x=>x.remove())}
+        food.style.left='-999px'    
     }else{
         feature.style.display='none'
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
@@ -2258,6 +2263,7 @@ modeNormal.addEventListener('click',function(){
     labelGrowthRate.style.display='block'
     labelSwiftness.style.display='block'
     labelEnemySpeed.style.display='none'
+    labelMap.style.display='block'
     labelUnbound.style.display='block'
     swiftCrawl.style.display='block'
     swiftWalk.style.display='block'
@@ -2273,6 +2279,7 @@ modeZombie.addEventListener('click',function(){
     labelGrowthRate.style.display='block'
     labelSwiftness.style.display='block'
     labelEnemySpeed.style.display='none'
+    labelMap.style.display='block'
     labelUnbound.style.display='block'
     swiftCrawl.style.display='block'
     swiftWalk.style.display='block'
@@ -2288,6 +2295,7 @@ modeWar.addEventListener('click',function(){
     labelGrowthRate.style.display='none'
     labelSwiftness.style.display='block'
     labelEnemySpeed.style.display='none'
+    labelMap.style.display='block'
     labelUnbound.style.display='block'
     swiftCrawl.style.display='none'
     swiftWalk.style.display='block'
@@ -2303,6 +2311,23 @@ modeSuper.addEventListener('click',function(){
     labelGrowthRate.style.display='none'
     labelSwiftness.style.display='block'
     labelEnemySpeed.style.display='block'
+    labelMap.style.display='block'
+    labelUnbound.style.display='none'
+    swiftCrawl.style.display='none'
+    swiftWalk.style.display='none'
+    swiftRun.style.display='block'
+    swiftFly.style.display='block'
+    swiftSpeedster.style.display='block'
+    swiftRun.selected='true'
+    },false)
+modeAngry.addEventListener('click',function(){
+    mode='angry'
+    gameMode.style.display='none'
+    gameStyle.style.display='block'
+    labelGrowthRate.style.display='none'
+    labelSwiftness.style.display='block'
+    labelEnemySpeed.style.display='block'
+    labelMap.style.display='none'
     labelUnbound.style.display='none'
     swiftCrawl.style.display='none'
     swiftWalk.style.display='none'
