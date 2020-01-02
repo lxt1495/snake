@@ -29,6 +29,8 @@ let swiftFly=document.getElementById('fly')
 let swiftSpeedster=document.getElementById('speedster')
 let enemySpeed=document.querySelector('.enemy-speed')
 let map=document.querySelector('.map')
+let mapNone=document.getElementById('none')
+let mapBrickStorm=document.getElementById('brickStorm')
 let unbound=document.querySelector('.unbound')
 let modalMenu=document.querySelector('.modal-menu')
 let game=document.querySelector('.game')
@@ -54,7 +56,7 @@ let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bomb
 let zombieDuration=0,bomb=0,freeze=false
 let zombieCondition=15000,enemyNumber=4,freezeDuration=2000,enemyRespawnTime=5000
 let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
-let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType
+let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,brickStorm=false
 let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRespawnTime=5000
 let brickWallIndex,brickWaveIndex,press=false,speedChange=false
 let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=200,scoreThreshold=10
@@ -573,8 +575,9 @@ function check(){
     if(bricks){
         Object.values(bricks).forEach(x=>{
             if(x.offsetTop===main.offsetTop&&x.offsetLeft===main.offsetLeft){
-                if(unbound.checked){stepBack()}
-                else{lost=true}
+                if(unbound.checked){
+                    if(!brickStorm){stepBack()}
+                }else{lost=true}
             }
             })    
     }
@@ -626,6 +629,12 @@ function stepBack(){
 function keydown(e){
 if(!foeMindControl){
     if(e.key==='ArrowUp'){
+        if(mode==='war'||mode==='super'){
+            let abort=false
+            let bricks=document.querySelectorAll('.brick')
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
+            if(abort){return}
+        }
         if(mode==='zombie'){if(action[0]&&action[0]()==='down'){return}
                             step(move.down)}
         else{if(action[0]&&action[0]()==='up'){return}
@@ -633,6 +642,12 @@ if(!foeMindControl){
              if(mindControl){foeStep(move.up)}}
         }
     if(e.key==='ArrowDown'){
+        if(mode==='war'||mode==='super'){
+            let abort=false
+            let bricks=document.querySelectorAll('.brick')
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
+            if(abort){return}
+        }
         if(mode==='zombie'){if(action[0]&&action[0]()==='up'){return}
                             step(move.up)}
         else{if(action[0]&&action[0]()==='down'){return}
@@ -640,6 +655,12 @@ if(!foeMindControl){
              if(mindControl){foeStep(move.down)}}
         }
     if(e.key==='ArrowLeft'){
+        if(mode==='war'||mode==='super'){
+            let abort=false
+            let bricks=document.querySelectorAll('.brick')
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
+            if(abort){return}
+        }
         if(mode==='zombie'){if(action[0]&&action[0]()==='right'){return}
                             step(move.right)}
         else{if(action[0]&&action[0]()==='left'){return}
@@ -647,6 +668,12 @@ if(!foeMindControl){
              if(mindControl){foeStep(move.left)}}
         }
     if(e.key==='ArrowRight'){
+        if(mode==='war'||mode==='super'){
+            let abort=false
+            let bricks=document.querySelectorAll('.brick')
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
+            if(abort){return}
+        }
         if(mode==='zombie'){if(action[0]&&action[0]()==='left'){return}
                             step(move.left)}
         else{if(action[0]&&action[0]()==='right'){return}
@@ -728,8 +755,21 @@ function run(){
     }else{
         if(!foeMindControl){
             if(action[0]){
-                step(action[0])
-                if(mindControl){foeStep(action[0])}
+                if(mode==='war'||mode==='super'){
+                    let abort=false
+                    let bricks=document.querySelectorAll('.brick')
+                    if(action[0]===move.up){Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})}
+                    if(action[0]===move.down){Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})}
+                    if(action[0]===move.left){Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})}
+                    if(action[0]===move.right){Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})}
+                    if(!abort){
+                        step(action[0])
+                        if(mindControl){foeStep(action[0])}        
+                    }            
+                }else{
+                    step(action[0])
+                    if(mindControl){foeStep(action[0])}    
+                    }
                 }
         }
     }
@@ -1804,6 +1844,44 @@ function explosion(){
         })
     }
     }
+function brickStormWave(){
+    let brickWall=[]
+    let brickNumber=Math.floor(canvasHeight/20)
+    let mainBrick=document.createElement('div')
+    canvas.appendChild(mainBrick)
+    mainBrick.className='brick'
+    mainBrick.style.top=canvasTop+'px'
+    mainBrick.style.left=(canvasLeft+canvasWidth-20)+'px'
+    brickWall.push(mainBrick)
+    for(let i=0; i<brickNumber-1;i++){
+        let brick=document.createElement('div')
+        canvas.appendChild(brick)
+        brick.className='brick'
+        brick.style.top=(mainBrick.offsetTop+(i+1)*20)+'px'
+        brick.style.left=mainBrick.offsetLeft+'px'
+        brickWall.push(brick)
+    }
+    let brickGapIndex=Math.floor(Math.random()*(brickWall.length-brickGapLength))
+    for(let i=0; i<brickGapLength;i++){
+        brickWall[brickGapIndex+i].remove()
+    }
+    }
+function brickStormWall(){
+    let squareMove=false
+    let bricks=document.querySelectorAll('.brick')
+    if(bricks){
+        Object.values(bricks).forEach(x=>{
+            Object.values(square).forEach(y=>{
+                if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft+20){squareMove=true}
+            })
+            })
+        if(squareMove){Object.values(square).forEach(x=>x.style.left=(x.offsetLeft-20)+'px')}
+        Object.values(bricks).forEach(x=>{
+            x.style.left=(x.offsetLeft-20)+'px'
+            if(x.offsetLeft<canvasLeft){x.remove()}
+        })
+    }
+    }
 function angryCheck(){
     let lost=false
     let bricks=document.querySelectorAll('.brick')
@@ -1915,6 +1993,10 @@ function begin(){
         brickWallIndex=setInterval(brickWall,brickWallSpeed)
         document.body.addEventListener('keydown',angryKeydown,false)
     }else{
+        if(brickStorm){
+            brickWaveIndex=setInterval(brickStormWave,brickWaveSpeed)
+            brickWallIndex=setInterval(brickStormWall,brickWallSpeed)    
+        }
         document.body.addEventListener('keydown',keydown,false)
     }
     runIndex=setInterval(run,speed)
@@ -1942,6 +2024,7 @@ function end(){
 function setDefault(){
     let bricks=document.querySelectorAll('.brick')
     if(bricks){Object.values(bricks).forEach(x=>x.remove())}
+    brickStorm=false
     switch(growthRate.value){
         case 'slow':{n=1;break}
         case 'normal':{n=2;break}
@@ -2043,10 +2126,13 @@ function setDefault(){
                 brick.style.left=(firstBrick.offsetLeft+length)+'px'
             }
             break}
+        case 'brick-storm':{
+            brickStorm=true
+            break}
         default:{console.log('map err');break}
     }
-    if(mode==='war'){n=1}
-    else if(mode==='super'){n=0;unbound.checked=true}
+    if(mode==='war'){n=1;unbound.checked=true}
+    if(mode==='super'){n=0;unbound.checked=true}
     square = document.querySelectorAll('.square')
     Object.values(square).forEach((x,i)=>{if(i>2){x.remove()}})
     while(square.length<3){
@@ -2086,6 +2172,7 @@ function setDefault(){
     freeze=false,superStrong=false,laserEye=false,bombEater=false,mindControl=false
     foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
     foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false
+    brickWallSpeed=200,brickWaveSpeed=5000
     if(mode==='zombie'){
         zombieDuration=0
         feature.style.display='block'
@@ -2104,6 +2191,7 @@ function setDefault(){
             newEnemy.className='enemy'
             enemyDefault(newEnemy)
         }
+        if(brickStorm){brickStormWave()}    
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='green'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
@@ -2120,7 +2208,8 @@ function setDefault(){
             foeAction.forEach((x,i)=>{if(x){x(foe[i])}})
             foeDraw(food)
             add(foePosition,{top:foeMain.offsetTop,left:foeMain.offsetLeft})
-            }    
+            }
+        if(brickStorm){brickStormWave()}    
         Object.values(foe).forEach(x=>{if(x){x.style.backgroundColor='lightsalmon'}})
         foeEmo.style.display='none'
         foeEmo.style.color='black'    
@@ -2130,8 +2219,6 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
     }else if(mode==='angry'){
-        brickWallSpeed=200
-        brickWaveSpeed=5000
         feature.style.display='none'
         let bricks=document.querySelectorAll('.brick')
         if(bricks){Object.values(bricks).forEach(x=>x.remove())}
@@ -2359,6 +2446,8 @@ modeNormal.addEventListener('click',function(){
     swiftFly.style.display='block'
     swiftSpeedster.style.display='block'
     swiftRun.selected='true'
+    mapBrickStorm.style.display='none'
+    mapNone.selected='true'
     },false)
 modeZombie.addEventListener('click',function(){
     mode='zombie'
@@ -2375,6 +2464,8 @@ modeZombie.addEventListener('click',function(){
     swiftFly.style.display='block'
     swiftSpeedster.style.display='block'
     swiftRun.selected='true'
+    mapBrickStorm.style.display='none'
+    mapNone.selected='true'
     },false)
 modeWar.addEventListener('click',function(){
     mode='war'
@@ -2384,13 +2475,15 @@ modeWar.addEventListener('click',function(){
     labelSwiftness.style.display='block'
     labelEnemySpeed.style.display='none'
     labelMap.style.display='block'
-    labelUnbound.style.display='block'
+    labelUnbound.style.display='none'
     swiftCrawl.style.display='none'
     swiftWalk.style.display='block'
     swiftRun.style.display='block'
     swiftFly.style.display='block'
     swiftSpeedster.style.display='none'
     swiftRun.selected='true'
+    mapBrickStorm.style.display='block'
+    mapNone.selected='true'
     },false)
 modeSuper.addEventListener('click',function(){
     mode='super'
@@ -2407,9 +2500,12 @@ modeSuper.addEventListener('click',function(){
     swiftFly.style.display='block'
     swiftSpeedster.style.display='block'
     swiftRun.selected='true'
+    mapBrickStorm.style.display='block'
+    mapNone.selected='true'
     },false)
 modeAngry.addEventListener('click',function(){
     mode='angry'
+    mapNone.selected='true'
     style='survivor'
     gameMode.style.display='none'
     gameStyle.style.display='none'

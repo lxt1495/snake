@@ -271,7 +271,7 @@ label{
     background-color:blue;
     border-radius: 50%;
     animation: Fadein 1s;
-    z-index: 6;
+    z-index: 7;
 }
 .laser{
     position: absolute;
