@@ -1867,6 +1867,7 @@ function brickStormWave(){
     }
     }
 function brickStormWall(){
+    let lost=false
     let squareMove=false
     let bricks=document.querySelectorAll('.brick')
     if(bricks){
@@ -1875,12 +1876,16 @@ function brickStormWall(){
                 if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft+20){squareMove=true}
             })
             })
-        if(squareMove){Object.values(square).forEach(x=>x.style.left=(x.offsetLeft-20)+'px')}
+        if(squareMove){Object.values(square).forEach(x=>{
+            x.style.left=(x.offsetLeft-20)+'px'
+            if(x.offsetLeft<canvasLeft){lost=true}
+            })}
         Object.values(bricks).forEach(x=>{
             x.style.left=(x.offsetLeft-20)+'px'
             if(x.offsetLeft<canvasLeft){x.remove()}
         })
     }
+    if(lost){lose()}
     }
 function angryCheck(){
     let lost=false
@@ -2350,7 +2355,12 @@ function lose(){
             }
             Object.values(square).forEach(x=>x.style.animation='Angrylose 2s')
             setTimeout(function(){Object.values(square).forEach(x=>x.style.top=(x.offsetTop+3000)+'px')},1000)
-        }else{stepBack()}
+        }else{
+            if(brickStorm){
+                let bricks=document.querySelectorAll('.brick')
+                Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')
+            }else{stepBack()}
+        }
         emo.textContent='X'
         emo.style.top='-1px'
         emo.style.left='3px'
