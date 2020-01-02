@@ -1762,6 +1762,10 @@ function explosion(){
                             if(x===main||x.className==='square'){if(!bombEater){lost=true}}
                             if(x===foeMain||x.className==='foe'){if(!foeBombEater){foeLost=true}}
                             if(x===food){foodDefault()}
+                            if(x.className==='brick'){
+                                x.style.animation='Fadeout 0.7s'
+                                setTimeout(function(){x.remove()},700)
+                            }
                         }
                     })
                 if(lost){lose()}
@@ -1799,6 +1803,10 @@ function explosion(){
                                 {
                                     if(y===foeMain||y.className==='foe'){if(!foeBombEater){foeLost=true}}
                                     if(y===food){foodDefault()}
+                                    if(y.className==='brick'){
+                                        y.style.animation='Fadeout 0.7s'
+                                        setTimeout(function(){y.remove()},700)
+                                    }
                                 }
                             })
                         if(foeLost){foeDead()}
@@ -1834,6 +1842,10 @@ function explosion(){
                                 {
                                     if(y===main||y.className==='square'){if(!bombEater){lost=true}}
                                     if(y===food){foodDefault()}
+                                    if(y.className==='brick'){
+                                        y.style.animation='Fadeout 0.7s'
+                                        setTimeout(function(){y.remove()},700)
+                                    }
                                 }
                             })
                         if(lost){lose()}
