@@ -348,4 +348,10 @@ label{
     80%{transform: scale(20);opacity:0.1}
     100%{transform: scale(20);opacity:0}
 }
+@keyframes Angrylose{
+    0%{}
+    10%{transform: translateY(-400px)}
+    12%{transform: translateY(-400px)}
+    100%{transform: translateY(+3000px)}
+}
 
