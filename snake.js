@@ -2286,6 +2286,7 @@ function setDefault(){
         if(mode==='zombie'){description.textContent=`Reverse keydown. Zombie must eat every ${zombieCondition/1000} seconds`}
         if(mode==='war'){description.textContent=`Press space to plant bomb`}
         if(mode==='super'){description.textContent=`Food gives you super-power`}
+        if(mode==='angry'){description.textContent=`Press space to jump`}
     }
     }
 function updateScore(){
