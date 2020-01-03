@@ -51,15 +51,15 @@ let description=document.querySelector('.description')
 let pause=document.querySelector('.pause')
 let reset=document.querySelector('.reset')
 let exit=document.querySelector('.exit')
-let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,superStrong=false,laserEye=false,bombEater=false,mindControl=false
-let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bombDelay=1000
+let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,superStrong=false,laserEye=false,bombEater=false,mindControl=false,brickStormHorizontal=true,waveCount=0,waveChange=false
+let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bombDelay=1000, waveThreshold=5
 let zombieDuration=0,bomb=0,freeze=false
 let zombieCondition=15000,enemyNumber=4,freezeDuration=2000,enemyRespawnTime=5000
 let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
 let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,brickStorm=false
 let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRespawnTime=5000
 let brickWallIndex,brickWaveIndex,press=false,speedChange=false
-let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=200,scoreThreshold=1
+let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=200,scoreThreshold=5
 let canvasHeight=Math.floor(window.innerHeight/20)*20, canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20, canvasTop=0, canvasLeft=0
 let action=new Array(square.length+n+1)
 let position=new Array(square.length+n+1)
@@ -1868,29 +1868,46 @@ function explosion(){
         })
     }
     }
-function brickStormWave(){
-    let brickWall=[]
-    let brickNumber=Math.floor(canvasHeight/20)
-    let mainBrick=document.createElement('div')
-    canvas.appendChild(mainBrick)
-    mainBrick.className='brick'
-    mainBrick.style.top=canvasTop+'px'
-    mainBrick.style.left=(canvasLeft+canvasWidth-20)+'px'
-    brickWall.push(mainBrick)
-    for(let i=0; i<brickNumber-1;i++){
-        let brick=document.createElement('div')
-        canvas.appendChild(brick)
-        brick.className='brick'
-        brick.style.top=(mainBrick.offsetTop+(i+1)*20)+'px'
-        brick.style.left=mainBrick.offsetLeft+'px'
-        brickWall.push(brick)
+function brickStormHorizontalWave(){
+    if(waveChange){
+        let brick=document.querySelector('.brick')
+        if(!brick){
+            waveChange=false
+            brickStormHorizontal=!brickStormHorizontal
+            end()
+            begin()
+        }
     }
-    let brickGapIndex=Math.floor(Math.random()*(brickWall.length-brickGapLength))
-    for(let i=0; i<brickGapLength;i++){
-        brickWall[brickGapIndex+i].remove()
+    else{
+        let brickWall=[]
+        let brickNumber=Math.floor(canvasHeight/20)
+        let mainBrick=document.createElement('div')
+        canvas.appendChild(mainBrick)
+        mainBrick.className='brick'
+        mainBrick.style.top=canvasTop+'px'
+        mainBrick.style.left=(canvasLeft+canvasWidth-20)+'px'
+        brickWall.push(mainBrick)
+        for(let i=0; i<brickNumber-1;i++){
+            let brick=document.createElement('div')
+            canvas.appendChild(brick)
+            brick.className='brick'
+            brick.style.top=(mainBrick.offsetTop+(i+1)*20)+'px'
+            brick.style.left=mainBrick.offsetLeft+'px'
+            brickWall.push(brick)
+        }
+        let brickGapIndex=Math.floor(Math.random()*(brickWall.length-brickGapLength))
+        for(let i=0; i<brickGapLength;i++){
+            brickWall[brickGapIndex+i].remove()
+        }
+        waveCount+=1
+        if(waveCount%waveThreshold===0){waveChange=true}
+        if(waveCount%(waveThreshold*2)===0){
+            if(brickWaveSpeed>3000){brickWaveSpeed-=400}
+            if(brickWallSpeed>100){brickWallSpeed-=20}
+        }
     }
     }
-function brickStormWall(){
+function brickStormHorizontalWall(){
     let squareMove=false
     let bricks=document.querySelectorAll('.brick')
     if(bricks){
@@ -1916,6 +1933,74 @@ function brickStormWall(){
         Object.values(bricks).forEach(x=>{
             x.style.left=(x.offsetLeft-20)+'px'
             if(x.offsetLeft<canvasLeft){x.remove()}
+        })
+    }
+    }
+function brickStormVerticalWave(){
+    if(waveChange){
+        let brick=document.querySelector('.brick')
+        if(!brick){
+            waveChange=false
+            brickStormHorizontal=!brickStormHorizontal
+            end()
+            begin()
+        }
+    }
+    else{
+        let brickWall=[]
+        let brickNumber=Math.floor(canvasWidth/20)
+        let mainBrick=document.createElement('div')
+        canvas.appendChild(mainBrick)
+        mainBrick.className='brick'
+        mainBrick.style.top=canvasTop+'px'
+        mainBrick.style.left=canvasLeft+'px'
+        brickWall.push(mainBrick)
+        for(let i=0; i<brickNumber-1;i++){
+            let brick=document.createElement('div')
+            canvas.appendChild(brick)
+            brick.className='brick'
+            brick.style.top=mainBrick.offsetTop+'px'
+            brick.style.left=(mainBrick.offsetLeft+(i+1)*20)+'px'
+            brickWall.push(brick)
+        }
+        let brickGapIndex=Math.floor(Math.random()*(brickWall.length-brickGapLength))
+        for(let i=0; i<brickGapLength;i++){
+            brickWall[brickGapIndex+i].remove()
+        }
+        waveCount+=1
+        if(waveCount%waveThreshold===0){waveChange=true}
+        if(waveCount%(waveThreshold*2)===0){
+            if(brickWaveSpeed>3000){brickWaveSpeed-=400}
+            if(brickWallSpeed>100){brickWallSpeed-=20}
+        }
+    }
+    }
+function brickStormVerticalWall(){
+    let squareMove=false
+    let bricks=document.querySelectorAll('.brick')
+    if(bricks){
+        Object.values(bricks).forEach(x=>{
+            Object.values(square).forEach(y=>{
+                if(x.offsetTop===y.offsetTop-20&&x.offsetLeft===y.offsetLeft){squareMove=true}
+            })
+            })
+        if(squareMove){
+            Object.values(square).forEach(x=>x.style.top=(x.offsetTop+20)+'px')
+            unblock()
+            position.forEach(x=>{
+                if(x){
+                    x.top+=20
+                    if(x.top<canvasTop){x.top=canvasTop+canvasHeight-20}
+                    if(x.top>canvasTop+canvasHeight-20){x.top=canvasTop}
+                    if(x.left<canvasLeft){x.left=canvasLeft+canvasWidth-20}
+                    if(x.left>canvasLeft+canvasWidth-20){x.left=canvasLeft}
+                }
+            })
+            check()
+        }
+        Object.values(bricks).forEach(x=>{
+            x.style.top=(x.offsetTop+20)+'px'
+            if(x.offsetTop>canvasTop+canvasHeight-20){x.remove()}
         })
     }
     }
@@ -2029,8 +2114,15 @@ function begin(){
         document.body.addEventListener('keydown',angryKeydown,false)
     }else{
         if(brickStorm){
-            brickWaveIndex=setInterval(brickStormWave,brickWaveSpeed)
-            brickWallIndex=setInterval(brickStormWall,brickWallSpeed)    
+            if(brickStormHorizontal){
+                brickStormHorizontalWave()
+                brickWaveIndex=setInterval(brickStormHorizontalWave,brickWaveSpeed)
+                brickWallIndex=setInterval(brickStormHorizontalWall,brickWallSpeed) 
+            }else{
+                brickStormVerticalWave()
+                brickWaveIndex=setInterval(brickStormVerticalWave,brickWaveSpeed)
+                brickWallIndex=setInterval(brickStormVerticalWall,brickWallSpeed) 
+            }   
         }
         document.body.addEventListener('keydown',keydown,false)
     }
@@ -2210,7 +2302,7 @@ function setDefault(){
     freeze=false,superStrong=false,laserEye=false,bombEater=false,mindControl=false
     foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
     foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false
-    brickWallSpeed=200,brickWaveSpeed=5000
+    brickStormHorizontal=true,waveChange=false,waveCount=0,brickWallSpeed=200,brickWaveSpeed=5000
     if(mode==='zombie'){
         zombieDuration=0
         feature.style.display='block'
@@ -2229,7 +2321,6 @@ function setDefault(){
             newEnemy.className='enemy'
             enemyDefault(newEnemy)
         }
-        if(brickStorm){brickStormWave()}    
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='green'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
@@ -2247,7 +2338,6 @@ function setDefault(){
             foeDraw(food)
             add(foePosition,{top:foeMain.offsetTop,left:foeMain.offsetLeft})
             }
-        if(brickStorm){brickStormWave()}    
         Object.values(foe).forEach(x=>{if(x){x.style.backgroundColor='lightsalmon'}})
         foeEmo.style.display='none'
         foeEmo.style.color='black'    
@@ -2432,7 +2522,8 @@ function lose(){
         }else{
             if(brickStorm){
                 let bricks=document.querySelectorAll('.brick')
-                Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')
+                if(brickStormHorizontal){Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')}
+                else{Object.values(bricks).forEach(x=>x.style.top=(x.offsetTop-20)+'px')}
             }else{stepBack()}
         }
         emo.textContent='X'

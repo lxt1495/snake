@@ -129,7 +129,16 @@ html,body{
     animation: Dropdown 0.4s;
 }
 .game-mode-content button{
+    border: none;
+    padding:none;
+    margin:none;
     height: 20%;
+}
+.modal-menu-content button{
+    border: none;
+    padding:none;
+    margin:none;
+    height: 33.333333%;
 }
 button:hover{
     background-color: #ddd;
