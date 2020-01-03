@@ -61,12 +61,14 @@ html,body{
 .tab-button button{
     display: block;
     border: none;
-    padding: 14px 16px;
+    padding: none;
     margin:none;
-    width:25%;
+    width:20%;
     background-color: inherit;
     cursor: pointer;
     transition: 0.3s;
+    text-align: center;
+    font-size: 2vh;
 }
 .tab-button button:hover{
     background-color: #ddd;
@@ -120,6 +122,9 @@ html,body{
     justify-content: space-between;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
     animation: Dropdown 0.4s;
+}
+.game-mode-content button{
+    height: 20%;
 }
 button:hover{
     background-color: #ddd;

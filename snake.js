@@ -2291,13 +2291,17 @@ function setDefault(){
 function updateScore(){
     let newHighScore=false
     if(mode==='normal'&&highScoreNormal){
-        highScoreNormal.forEach(x=>{if(score>Number(x)){newHighScore=true}})
+        highScoreNormal.forEach(x=>{
+            let topScore=x.split('/')[0]
+            if(score>Number(topScore)){newHighScore=true}})
         if(newHighScore){
             alert('you have new high score')
-            add(highScoreNormal,score)
-            highScoreNormal.sort((a,b)=>{return (Number(b)-Number(a))})
-            let data={highScore:highScoreNormal.toString()}
-            fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/normal/1',{
+            let a=new Date
+            let time=a.getTime()
+            add(highScoreNormal,`${score}/${time}`)
+            highScoreNormal.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
+            let data={normal:highScoreNormal.toString()}
+            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2311,13 +2315,17 @@ function updateScore(){
         }
     }
     if(mode==='zombie'&&highScoreZombie){
-        highScoreZombie.forEach(x=>{if(score>Number(x)){newHighScore=true}})
+        highScoreZombie.forEach(x=>{
+            let topScore=x.split('/')[0]
+            if(score>Number(topScore)){newHighScore=true}})
         if(newHighScore){
             alert('you have new high score')
-            add(highScoreZombie,score)
-            highScoreZombie.sort((a,b)=>{return (Number(b)-Number(a))})
-            let data={highScore:highScoreZombie.toString()}
-            fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/zombie/1',{
+            let a=new Date
+            let time=a.getTime()
+            add(highScoreZombie,`${score}/${time}`)
+            highScoreZombie.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
+            let data={zombie:highScoreZombie.toString()}
+            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2331,13 +2339,17 @@ function updateScore(){
         }
     }
     if(mode==='war'&&highScoreWar){
-        highScoreWar.forEach(x=>{if(score>Number(x)){newHighScore=true}})
+        highScoreWar.forEach(x=>{
+            let topScore=x.split('/')[0]
+            if(score>Number(topScore)){newHighScore=true}})
         if(newHighScore){
             alert('you have new high score')
-            add(highScoreWar,score)
-            highScoreWar.sort((a,b)=>{return (Number(b)-Number(a))})
-            let data={highScore:highScoreWar.toString()}
-            fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/war/1',{
+            let a=new Date
+            let time=a.getTime()
+            add(highScoreWar,`${score}/${time}`)
+            highScoreWar.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
+            let data={war:highScoreWar.toString()}
+            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2351,13 +2363,41 @@ function updateScore(){
         }
     }
     if(mode==='super'&&highScoreSuper){
-        highScoreSuper.forEach(x=>{if(score>Number(x)){newHighScore=true}})
+        highScoreSuper.forEach(x=>{
+            let topScore=x.split('/')[0]
+            if(score>Number(topScore)){newHighScore=true}})
         if(newHighScore){
             alert('you have new high score')
-            add(highScoreSuper,score)
-            highScoreSuper.sort((a,b)=>{return (Number(b)-Number(a))})
-            let data={highScore:highScoreSuper.toString()}
-            fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/super/1',{
+            let a=new Date
+            let time=a.getTime()
+            add(highScoreSuper,`${score}/${time}`)
+            highScoreSuper.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
+            let data={super:highScoreSuper.toString()}
+            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
+                method:'PUT',
+                headers:{
+                    'content-type':'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(res=>{
+                    if(res.ok){console.log('highScore updated')}
+                    else{console.log('highScore failed')}
+                })
+        }
+    }
+    if(mode==='angry'&&highScoreAngry){
+        highScoreAngry.forEach(x=>{
+            let topScore=x.split('/')[0]
+            if(score>Number(topScore)){newHighScore=true}})
+        if(newHighScore){
+            alert('you have new high score')
+            let a=new Date
+            let time=a.getTime()
+            add(highScoreAngry,`${score}/${time}`)
+            highScoreAngry.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
+            let data={angry:highScoreAngry.toString()}
+            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2590,10 +2630,21 @@ volume.addEventListener('input',function(){
 highScore.addEventListener('click',function(){
     modalHighScore.style.display='block'
     Object.values(tabContent.children).forEach(x=>x.innerHTML='')
-    if(highScoreNormal){highScoreNormal.forEach((x,i)=>{tabContent.children[0].innerHTML+=`${i+1}) ${x} <br />`})}
-    if(highScoreZombie){highScoreZombie.forEach((x,i)=>{tabContent.children[1].innerHTML+=`${i+1}) ${x} <br />`})}
-    if(highScoreWar){highScoreWar.forEach((x,i)=>{tabContent.children[2].innerHTML+=`${i+1}) ${x} <br />`})}
-    if(highScoreSuper){highScoreSuper.forEach((x,i)=>{tabContent.children[3].innerHTML+=`${i+1}) ${x} <br />`})}
+    if(highScoreNormal){highScoreNormal.forEach((x,i)=>{
+        let a=new Date(Number(x.split('/')[1]))
+        tabContent.children[0].innerHTML+=`${i+1}) ${x.split('/')[0]} <br /> ${x.split('/')[1]==='0'?'none':a.toDateString()} <br />`})}
+    if(highScoreZombie){highScoreZombie.forEach((x,i)=>{
+        let a=new Date(Number(x.split('/')[1]))
+        tabContent.children[1].innerHTML+=`${i+1}) ${x.split('/')[0]} <br /> ${x.split('/')[1]==='0'?'none':a.toDateString()} <br />`})}
+    if(highScoreWar){highScoreWar.forEach((x,i)=>{
+        let a=new Date(Number(x.split('/')[1]))
+        tabContent.children[2].innerHTML+=`${i+1}) ${x.split('/')[0]} <br /> ${x.split('/')[1]==='0'?'none':a.toDateString()} <br />`})}
+    if(highScoreSuper){highScoreSuper.forEach((x,i)=>{
+        let a=new Date(Number(x.split('/')[1]))
+        tabContent.children[3].innerHTML+=`${i+1}) ${x.split('/')[0]} <br /> ${x.split('/')[1]==='0'?'none':a.toDateString()} <br />`})}
+    if(highScoreAngry){highScoreAngry.forEach((x,i)=>{
+        let a=new Date(Number(x.split('/')[1]))
+        tabContent.children[4].innerHTML+=`${i+1}) ${x.split('/')[0]} <br /> ${x.split('/')[1]==='0'?'none':a.toDateString()} <br />`})}
     },false)
 
 let tabButton=document.querySelector('.tab-button')
@@ -2608,19 +2659,16 @@ let tabContent=document.querySelector('.tab-content')
     }
 document.getElementById('tab-default').click()
 
-let highScoreNormal,highScoreZombie,highScoreWar,highScoreSuper
-fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/normal/1',{method:'GET'})
+let highScoreNormal,highScoreZombie,highScoreWar,highScoreSuper,highScoreAngry
+fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{method:'GET'})
     .then(res=>res.json())
-    .then(res=>{highScoreNormal=res.highScore.split(',')})
-fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/zombie/1',{method:'GET'})
-    .then(res=>res.json())
-    .then(res=>{highScoreZombie=res.highScore.split(',')})
-fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/war/1',{method:'GET'})
-    .then(res=>res.json())
-    .then(res=>{highScoreWar=res.highScore.split(',')})
-fetch('https://5e0760ae87c6b400147a74ab.mockapi.io/super/1',{method:'GET'})
-    .then(res=>res.json())
-    .then(res=>{highScoreSuper=res.highScore.split(',')})
+    .then(res=>{
+        highScoreNormal=res.normal.split(',')
+        highScoreZombie=res.zombie.split(',')
+        highScoreWar=res.war.split(',')
+        highScoreSuper=res.super.split(',')
+        highScoreAngry=res.angry.split(',')
+    })
 
 let menuSound= new Audio('./sound/mainTrack.mp3')
 let playSound= new Audio('./sound/track2.mp3')
@@ -2630,5 +2678,3 @@ window.addEventListener('click',function playMenuSound(){
     menuSound.play()
     window.removeEventListener('click',playMenuSound,false)
     },false)
-
-
