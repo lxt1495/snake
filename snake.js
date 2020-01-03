@@ -1902,9 +1902,14 @@ function brickStormWall(){
         if(squareMove){
             Object.values(square).forEach(x=>x.style.left=(x.offsetLeft-20)+'px')
             unblock()
-            Object.values(square).forEach((x,i)=>{
-                position[i].top=x.offsetTop
-                position[i].left=x.offsetLeft
+            position.forEach(x=>{
+                if(x){
+                    x.left-=20
+                    if(x.top<canvasTop){x.top=canvasTop+canvasHeight-20}
+                    if(x.top>canvasTop+canvasHeight-20){x.top=canvasTop}
+                    if(x.left<canvasLeft){x.left=canvasLeft+canvasWidth-20}
+                    if(x.left>canvasLeft+canvasWidth-20){x.left=canvasLeft}
+                }
             })
             check()
         }
