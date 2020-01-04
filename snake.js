@@ -2862,19 +2862,19 @@ window.addEventListener('touchend',function(e){
 
     let spaceX=touchEndX-touchStartX
     let spaceY=touchEndY-touchStartY
-    if (spaceX<-window.innerWidth/5) {
+    if (spaceX<-window.innerWidth/3) {
         alert('left!');
     }
-    if (spaceX>window.innerWidth/5) {
+    if (spaceX>window.innerWidth/3) {
         alert('right!');
     }
-    if (spaceY<-window.innerWidth/5) {
+    if (spaceY<-window.innerWidth/3) {
         alert('up!');
     }
-    if (spaceY>window.innerWidth/5) {
+    if (spaceY>window.innerWidth/3) {
         alert('down!');
     }
-    if (Math.abs(spaceX)<window.innerWidth/5&&Math.abs(spaceY)<window.innerWidth/5) {
+    if (Math.abs(spaceX)<window.innerWidth/3&&Math.abs(spaceY)<window.innerWidth/3) {
         alert('tap!');
     }
     },false)
