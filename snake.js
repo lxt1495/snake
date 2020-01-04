@@ -2874,7 +2874,7 @@ window.addEventListener('touchend',function(e){
     if (spaceY>window.innerHeight/8) {
         alert('down!');
     }
-    if (Math.abs(spaceX)<window.innerWidth/4&&Math.abs(spaceY)<window.innerHeight/4) {
+    if (Math.abs(spaceX)<window.innerWidth/8&&Math.abs(spaceY)<window.innerHeight/8) {
         alert('tap!');
     }
     },false)
