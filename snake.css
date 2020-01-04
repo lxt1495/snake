@@ -4,6 +4,7 @@ html,body{
     margin:none;
     background-color: lightsteelblue;
     overflow: hidden;
+    touch-action: manipulation;
 }
 .menu{
     display:flex;
