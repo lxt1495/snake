@@ -472,6 +472,8 @@ function check(){
                         freeze=false
                         clearInterval(freezeIndex)}
                 },100)
+                freezeSound.currentTime=0
+                freezeSound.play()
                 food.style.animation='Freezeout 0.5s'
                 setTimeout(function(){
                     food.style.animation=''
@@ -2329,7 +2331,9 @@ function setDefault(){
     foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
     foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false
     brickStormHorizontal=true,waveChange=false,waveCount=0,brickWallSpeed=200,brickWaveSpeed=5000
+    stopPlaySound()
     if(mode==='zombie'){
+        zombieSound.play()
         zombieDuration=0
         feature.style.display='block'
         feature.textContent='Zombie-Time:'
@@ -2338,6 +2342,7 @@ function setDefault(){
         emo.style.color='red'
         food.style.backgroundColor='lightcoral'
     }else if(mode==='war'){
+        warSound.play()
         bomb=0
         feature.style.display='block'
         feature.textContent='Bomb-Count:'
@@ -2352,6 +2357,7 @@ function setDefault(){
         emo.style.color='black'
         food.style.backgroundColor='black'
     }else if(mode==='super'){
+        superSound.play()
         feature.style.display='block'
         feature.textContent='Super-Power:'
         foeAction=new Array(foe.length)
@@ -2373,6 +2379,7 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
     }else if(mode==='angry'){
+        angrySound.play()
         feature.style.display='none'
         let bricks=document.querySelectorAll('.brick')
         if(bricks){Object.values(bricks).forEach(x=>x.remove())}
@@ -2383,6 +2390,7 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
     }else{
+        normalSound.play()
         feature.style.display='none'
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
@@ -2534,8 +2542,16 @@ function updateScore(){
     }
     }
 function stopPlaySound(){
-    playSound.pause()
-    playSound.currentTime=0
+    normalSound.pause()
+    normalSound.currentTime=0
+    zombieSound.pause()
+    zombieSound.currentTime=0
+    warSound.pause()
+    warSound.currentTime=0
+    superSound.pause()
+    superSound.currentTime=0
+    angrySound.pause()
+    angrySound.currentTime=0
     laserSound.pause()
     laserSound.currentTime=0
     mindControlSound.pause()
@@ -2719,7 +2735,6 @@ modeAngry.addEventListener('click',function(){
     game.style.display='block'
     menuSound.pause()
     menuSound.currentTime=0
-    playSound.play()
     setDefault()
     },false)
 styleSurvivor.addEventListener('click',function(){
@@ -2730,7 +2745,6 @@ styleSurvivor.addEventListener('click',function(){
     game.style.display='block'
     menuSound.pause()
     menuSound.currentTime=0
-    playSound.play()
     setDefault()
     },false)
 styleTimer.addEventListener('click',function(){
@@ -2741,7 +2755,6 @@ styleTimer.addEventListener('click',function(){
     game.style.display='block'
     menuSound.pause()
     menuSound.currentTime=0
-    playSound.play()
     setDefault()
     },false)
 Object.values(sound).forEach(x=>{
@@ -2752,7 +2765,11 @@ Object.values(sound).forEach(x=>{
     })
 volume.addEventListener('input',function(){
     menuSound.volume=volume.value/100
-    playSound.volume=volume.value/100
+    normalSound.volume=volume.value/100
+    zombieSound.volume=volume.value/100
+    warSound.volume=volume.value/100
+    superSound.volume=volume.value/100
+    angrySound.volume=volume.value/100
     explosionSound.volume=volume.value/100
     superStrongSound.volume=volume.value/100
     laserSound.volume=volume.value/100
@@ -2804,9 +2821,18 @@ fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{method:'GET'})
     })
 
 let menuSound= new Audio('./sound/mainTrack.mp3')
-let playSound= new Audio('./sound/track2.mp3')
 menuSound.loop=true
-playSound.loop=true
+let normalSound= new Audio('./sound/normal.mp3')
+normalSound.loop=true
+let zombieSound= new Audio('./sound/zombie.mp3')
+zombieSound.loop=true
+let warSound= new Audio('./sound/war.mp3')
+warSound.loop=true
+let superSound= new Audio('./sound/super.mp3')
+superSound.loop=true
+let angrySound= new Audio('./sound/angry.mp3')
+angrySound.loop=true
+
 window.addEventListener('click',function playMenuSound(){
     menuSound.play()
     window.removeEventListener('click',playMenuSound,false)
@@ -2822,3 +2848,5 @@ let largeExplosionSound=new Audio('./sound/largeExplosion.mp3')
 largeExplosionSound.loop=false
 let mindControlSound=new Audio('./sound/mindControl.mp3')
 mindControlSound.loop=false
+let freezeSound=new Audio('./sound/freeze.mp3')
+freezeSound.loop=false
