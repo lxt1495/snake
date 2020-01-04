@@ -159,6 +159,7 @@ label{
     padding:none;
     margin:none;
     background-color: lightyellow;
+    touch-action: manipulation;
 }
 .brick{
     position: absolute;
