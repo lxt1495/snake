@@ -2856,7 +2856,7 @@ let freezeSound=new Audio('./sound/freeze.mp3')
 freezeSound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
-let touchThreshold=window.innerWidth/4
+let touchThreshold=window.innerWidth/5
 function touchStart(e){
     touchStartX=e.changedTouches[0].screenX
     touchStartY=e.changedTouches[0].screenY
@@ -2890,7 +2890,7 @@ function touchEnd(e){
         }
     }else{
     if(!foeMindControl){
-        if (spaceY<-touchThreshold) {
+        if(spaceY<-touchThreshold){
             if(unbound.checked){
                 let abort=false
                 let bricks=document.querySelectorAll('.brick')
@@ -2905,9 +2905,10 @@ function touchEnd(e){
                                 step(move.down)}
             else{if(action[0]&&action[0]()==='up'){return}
                  step(move.up)
-                 if(mindControl){foeStep(move.up)}}    
+                 if(mindControl){foeStep(move.up)}}
+            return    
         }
-        if (spaceY>touchThreshold) {
+        if(spaceY>touchThreshold){
             if(unbound.checked){
                 let abort=false
                 let bricks=document.querySelectorAll('.brick')
@@ -2923,8 +2924,9 @@ function touchEnd(e){
             else{if(action[0]&&action[0]()==='down'){return}
                  step(move.down)
                  if(mindControl){foeStep(move.down)}}    
+            return
         }
-        if (spaceX<-touchThreshold) {
+        if(spaceX<-touchThreshold){
             if(unbound.checked){
                 let abort=false
                 let bricks=document.querySelectorAll('.brick')
@@ -2939,9 +2941,10 @@ function touchEnd(e){
                                 step(move.right)}
             else{if(action[0]&&action[0]()==='left'){return}
                  step(move.left)
-                 if(mindControl){foeStep(move.left)}}    
+                 if(mindControl){foeStep(move.left)}} 
+            return   
         }
-        if (spaceX>touchThreshold) {
+        if(spaceX>touchThreshold){
             if(unbound.checked){
                 let abort=false
                 let bricks=document.querySelectorAll('.brick')
@@ -2956,9 +2959,10 @@ function touchEnd(e){
                                 step(move.left)}
             else{if(action[0]&&action[0]()==='right'){return}
                  step(move.right)
-                 if(mindControl){foeStep(move.right)}}    
+                 if(mindControl){foeStep(move.right)}}   
+            return 
         }
-        if (Math.abs(spaceX)<touchThreshold&&Math.abs(spaceY)<touchThreshold){
+        if(Math.abs(spaceX)<touchThreshold&&Math.abs(spaceY)<touchThreshold){
             if(mode==='war'){
                 if(bomb){
                     bomb-=1
@@ -3021,7 +3025,8 @@ function touchEnd(e){
                             clearInterval(bombExplodeIndex)
                         }
                     },100)
-                }    
+                }  
+            return  
             }
         }
     }    
