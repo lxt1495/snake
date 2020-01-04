@@ -2858,10 +2858,12 @@ freezeSound.loop=false
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
 let touchThreshold=window.innerWidth/10
 function touchStart(e){
+    e.preventDefault()
     touchStartX=e.changedTouches[0].screenX
     touchStartY=e.changedTouches[0].screenY
     }
 function touchEnd(e){
+    e.preventDefault()
     touchEndX=e.changedTouches[0].screenX
     touchEndY=e.changedTouches[0].screenY
     let spaceX=touchEndX-touchStartX
