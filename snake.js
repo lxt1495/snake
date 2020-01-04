@@ -2435,7 +2435,7 @@ function updateScore(){
             add(highScoreNormal,`${score}/${time}`)
             highScoreNormal.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
             let data={normal:highScoreNormal.toString()}
-            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
+            fetch('https://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2459,7 +2459,7 @@ function updateScore(){
             add(highScoreZombie,`${score}/${time}`)
             highScoreZombie.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
             let data={zombie:highScoreZombie.toString()}
-            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
+            fetch('https://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2483,7 +2483,7 @@ function updateScore(){
             add(highScoreWar,`${score}/${time}`)
             highScoreWar.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
             let data={war:highScoreWar.toString()}
-            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
+            fetch('https://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2507,7 +2507,7 @@ function updateScore(){
             add(highScoreSuper,`${score}/${time}`)
             highScoreSuper.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
             let data={super:highScoreSuper.toString()}
-            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
+            fetch('https://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2531,7 +2531,7 @@ function updateScore(){
             add(highScoreAngry,`${score}/${time}`)
             highScoreAngry.sort((a,b)=>{return (Number(b.split('/')[0])-Number(a.split('/')[0]))})
             let data={angry:highScoreAngry.toString()}
-            fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
+            fetch('https://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{
                 method:'PUT',
                 headers:{
                     'content-type':'application/json'
@@ -2814,7 +2814,7 @@ let tabContent=document.querySelector('.tab-content')
 document.getElementById('tab-default').click()
 
 let highScoreNormal,highScoreZombie,highScoreWar,highScoreSuper,highScoreAngry
-fetch('http://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{method:'GET'})
+fetch('https://5e0ee98d9576aa00146661f4.mockapi.io/highScore/1',{method:'GET'})
     .then(res=>res.json())
     .then(res=>{
         highScoreNormal=res.normal.split(',')
