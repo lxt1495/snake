@@ -2906,7 +2906,6 @@ function touchEnd(e){
             else{if(action[0]&&action[0]()==='up'){return}
                  step(move.up)
                  if(mindControl){foeStep(move.up)}}
-            return    
         }
         if(spaceY>touchThreshold){
             if(unbound.checked){
@@ -2924,7 +2923,6 @@ function touchEnd(e){
             else{if(action[0]&&action[0]()==='down'){return}
                  step(move.down)
                  if(mindControl){foeStep(move.down)}}    
-            return
         }
         if(spaceX<-touchThreshold){
             if(unbound.checked){
@@ -2942,7 +2940,6 @@ function touchEnd(e){
             else{if(action[0]&&action[0]()==='left'){return}
                  step(move.left)
                  if(mindControl){foeStep(move.left)}} 
-            return   
         }
         if(spaceX>touchThreshold){
             if(unbound.checked){
@@ -2960,7 +2957,6 @@ function touchEnd(e){
             else{if(action[0]&&action[0]()==='right'){return}
                  step(move.right)
                  if(mindControl){foeStep(move.right)}}   
-            return 
         }
         if(Math.abs(spaceX)<touchThreshold&&Math.abs(spaceY)<touchThreshold){
             if(mode==='war'){
@@ -3026,7 +3022,6 @@ function touchEnd(e){
                         }
                     },100)
                 }  
-            return  
             }
         }
     }    
