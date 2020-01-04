@@ -486,6 +486,7 @@ function check(){
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='green'
                     Object.values(square).forEach(x=>{x.style.animation='Superstrong 1s';x.style.transform='scale(1.5)';x.style.backgroundColor='green'})
+                    superStrongSound.play()
                     let superStrongInterval=setInterval(function(){
                         if(isRunning){superTime+=100}
                         if(superTime>=superDuration||stop){
@@ -495,6 +496,8 @@ function check(){
                             feature.style.animation=''    
                             eyeBall.style.backgroundColor='black'
                             Object.values(square).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightcoral'})
+                            superStrongSound.pause()
+                            superStrongSound.currentTime=0
                             clearInterval(superStrongInterval)}
                     },100)}
                 if(foodType==='laser'){
@@ -502,6 +505,7 @@ function check(){
                     feature.textContent='Super-Power: LaserEye'
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='red'
+                    laserSound.play()
                     let laserInterval=setInterval(function(){
                         if(isRunning){superTime+=100}
                         if(superTime>=superDuration||stop){
@@ -509,7 +513,9 @@ function check(){
                             laserEye=false
                             feature.textContent='Super-Power:'
                             feature.style.animation=''
-                            eyeBall.style.backgroundColor='black'    
+                            eyeBall.style.backgroundColor='black'
+                            laserSound.pause()
+                            laserSound.currentTime=0    
                             clearInterval(laserInterval)}
                     },100)}
                 if(foodType==='bomb'){
@@ -534,6 +540,7 @@ function check(){
                     feature.textContent='Super-Power: MindControl'
                     feature.style.animation='Fadeout 0.5s infinite'
                     eyeBall.style.backgroundColor='purple'
+                    mindControlSound.play()
                     let mindInterval=setInterval(function(){
                         if(isRunning){superTime+=100}
                         if(superTime>=superDuration||stop){
@@ -541,7 +548,9 @@ function check(){
                             mindControl=false
                             feature.textContent='Super-Power:'
                             feature.style.animation=''
-                            eyeBall.style.backgroundColor='black'    
+                            eyeBall.style.backgroundColor='black'
+                            mindControlSound.pause()
+                            mindControlSound.currentTime=0                            
                             clearInterval(mindInterval)}
                     },100)}
             }
@@ -711,6 +720,8 @@ if(!foeMindControl){
                 let bombExplodeIndex=setInterval(function(){
                     if(isRunning){bombExplodeTime+=100}
                     if(bombExplodeTime>=bombDelay){
+                        explosionSound.currentTime=0
+                        explosionSound.play()
                         bombExplode.style.animation='Scaleout 1s'
                         setTimeout(function(){bombExplode.remove()},1000)
                         setTimeout(function(){
@@ -1242,6 +1253,7 @@ function foeCheck(){
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='green'
                 Object.values(foe).forEach(x=>{x.style.animation='Superstrong 1s';x.style.transform='scale(1.5)';x.style.backgroundColor='green'})
+                superStrongSound.play()
                 let superStrongInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
@@ -1250,7 +1262,9 @@ function foeCheck(){
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
                         foeEyeBall.style.backgroundColor='black'
-                        Object.values(foe).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightsalmon'})    
+                        Object.values(foe).forEach(x=>{x.style.animation='Normalize 1s';x.style.transform='scale(1)';x.style.backgroundColor='lightsalmon'})
+                        superStrongSound.pause()
+                        superStrongSound.currentTime=0
                         clearInterval(superStrongInterval)}
                 },100)
             }
@@ -1259,6 +1273,7 @@ function foeCheck(){
                 feature.textContent='Enemy-Power: LaserEye'
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='red'
+                laserSound.play()
                 let laserInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
@@ -1266,7 +1281,9 @@ function foeCheck(){
                         foeLaserEye=false
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
-                        foeEyeBall.style.backgroundColor='black'    
+                        foeEyeBall.style.backgroundColor='black'
+                        laserSound.pause()
+                        laserSound.currentTime=0    
                         clearInterval(laserInterval)}
                 },100)
             }
@@ -1292,6 +1309,7 @@ function foeCheck(){
                 feature.textContent='Enemy-Power: MindControl'
                 feature.style.animation='Fadeout 0.5s infinite'
                 foeEyeBall.style.backgroundColor='purple'
+                mindControlSound.play()
                 let mindInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
@@ -1299,7 +1317,9 @@ function foeCheck(){
                         foeMindControl=false
                         feature.textContent='Super-Power:'
                         feature.style.animation=''
-                        foeEyeBall.style.backgroundColor='black'    
+                        foeEyeBall.style.backgroundColor='black'
+                        mindControlSound.pause()
+                        mindControlSound.currentTime=0                        
                         clearInterval(mindInterval)}
                 },100)}
         }
@@ -1761,6 +1781,8 @@ function explosion(){
     let bombExplodeIndex=setInterval(function(){
         if(isRunning){bombExplodeTime+=100}
         if(bombExplodeTime>=bombDelay){
+            explosionSound.currentTime=0
+            explosionSound.play()
             bombExplode.style.animation='Scaleout 1s'
             setTimeout(function(){bombExplode.remove()},1000)
             setTimeout(function(){
@@ -1796,6 +1818,8 @@ function explosion(){
             let squareExplodeIndex=setInterval(function(){
                 if(isRunning){squareExplodeTime+=100}
                 if(squareExplodeTime>=bombDelay){
+                    largeExplosionSound.currentTime=0
+                    largeExplosionSound.play()
                     x.style.animation=''
                     x.style.opacity='1'
                     let squareExplode=document.createElement('div')
@@ -1835,6 +1859,8 @@ function explosion(){
             let foeExplodeIndex=setInterval(function(){
                 if(isRunning){foeExplodeTime+=100}
                 if(foeExplodeTime>=bombDelay){
+                    largeExplosionSound.currentTime=0
+                    largeExplosionSound.play()
                     x.style.animation=''
                     x.style.opacity='1'
                     let foeExplode=document.createElement('div')
@@ -2507,6 +2533,14 @@ function updateScore(){
         }
     }
     }
+function stopPlaySound(){
+    playSound.pause()
+    playSound.currentTime=0
+    laserSound.pause()
+    laserSound.currentTime=0
+    mindControlSound.pause()
+    mindControlSound.currentTime=0
+    }
 function lose(){
     if(!stop){
         end()
@@ -2537,8 +2571,7 @@ function lose(){
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
             game.style.display='none'
-            playSound.pause()
-            playSound.currentTime=0
+            stopPlaySound()
             menuSound.play()            
             window.removeEventListener('click',resetClick,false)
         },false)
@@ -2559,8 +2592,7 @@ function win(){
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
             game.style.display='none'
-            playSound.pause()
-            playSound.currentTime=0
+            stopPlaySound()
             menuSound.play()            
             window.removeEventListener('click',resetClick,false)
         },false)
@@ -2590,8 +2622,7 @@ exit.addEventListener('click',function(){
     modalMenu.style.display='none'
     game.style.display='none'
     menu.style.display='flex'
-    playSound.pause()
-    playSound.currentTime=0
+    stopPlaySound()
     menuSound.play()
     },false)
 start.addEventListener('click',function(){
@@ -2722,6 +2753,11 @@ Object.values(sound).forEach(x=>{
 volume.addEventListener('input',function(){
     menuSound.volume=volume.value/100
     playSound.volume=volume.value/100
+    explosionSound.volume=volume.value/100
+    superStrongSound.volume=volume.value/100
+    laserSound.volume=volume.value/100
+    largeExplosionSound.volume=volume.value/100
+    mindControlSound.volume=volume.value/100
     volumeDisplay.textContent=`Volume: ${volume.value}`
     },false)
 highScore.addEventListener('click',function(){
@@ -2775,3 +2811,14 @@ window.addEventListener('click',function playMenuSound(){
     menuSound.play()
     window.removeEventListener('click',playMenuSound,false)
     },false)
+
+let explosionSound=new Audio('./sound/explosion.mp3')
+explosionSound.loop=false
+let superStrongSound=new Audio('./sound/superStrong.mp3')
+superStrongSound.loop=false
+let laserSound= new Audio('./sound/laser.mp3')
+laserSound.loop=true
+let largeExplosionSound=new Audio('./sound/largeExplosion.mp3')
+largeExplosionSound.loop=false
+let mindControlSound=new Audio('./sound/mindControl.mp3')
+mindControlSound.loop=false
