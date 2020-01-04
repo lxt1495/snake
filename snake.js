@@ -2856,7 +2856,7 @@ let freezeSound=new Audio('./sound/freeze.mp3')
 freezeSound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
-let touchThreshold=window.innerWidth/5
+let touchThreshold=window.innerWidth/6
 function touchStart(e){
     touchStartX=e.changedTouches[0].screenX
     touchStartY=e.changedTouches[0].screenY
