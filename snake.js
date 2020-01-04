@@ -2850,3 +2850,30 @@ let mindControlSound=new Audio('./sound/mindControl.mp3')
 mindControlSound.loop=false
 let freezeSound=new Audio('./sound/freeze.mp3')
 freezeSound.loop=false
+
+let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
+window.addEventListener('touchstart',function(e){
+    touchStartX=e.changedTouches[0].screenX
+    touchStartY=e.changedTouches[0].screenY
+    },false)
+window.addEventListener('touchend',function(e){
+    touchEndX=e.changedTouches[0].screenX
+    touchEndY=e.changedTouches[0].screenY
+
+    if (touchEndX < touchStartX) {
+        alert('left!');
+    }
+    if (touchEndX > touchStartX) {
+        alert('right!');
+    }
+    if (touchEndY < touchStartY) {
+        alert('up!');
+    }
+    if (touchEndY > touchStartY) {
+        alert('down!');
+    }
+    if (touchEndY === touchStartY) {
+        alert('tap!');
+    }
+    },false)
+
