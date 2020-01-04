@@ -152,6 +152,7 @@ label{
 }
 .game{
     display:none;
+    touch-action: manipulation;
 }
 .canvas{
     position:absolute;
@@ -307,6 +308,7 @@ label{
     display:flex;
     flex-flow: column nowrap;
     justify-content: space-around;
+    touch-action: manipulation;
 }
 .point{
     color: lightgreen;

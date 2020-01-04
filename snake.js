@@ -2856,7 +2856,7 @@ let freezeSound=new Audio('./sound/freeze.mp3')
 freezeSound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
-let touchThreshold=window.innerWidth/10
+let touchThreshold=window.innerWidth/20
 function touchStart(e){
     e.preventDefault()
     touchStartX=e.changedTouches[0].screenX
@@ -2885,6 +2885,10 @@ function touchEnd(e){
                     clearInterval(pressIndex)
                     document.body.removeEventListener('keydown',checkPress,false)
                 }
+            },false)
+            window.addEventListener('touchstart',function checkTouch(e){
+                clearInterval(pressIndex)
+                window.removeEventListener('touchstart',checkTouch,false)
             },false)
             if(main.offsetTop===canvasTop){return}
             Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')
