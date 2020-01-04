@@ -152,7 +152,6 @@ label{
 }
 .game{
     display:none;
-    touch-action: manipulation;
 }
 .canvas{
     position:absolute;
