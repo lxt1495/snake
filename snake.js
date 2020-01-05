@@ -2190,7 +2190,7 @@ function setCanvas(){
         canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20 
         canvasTop=0 
         canvasLeft=0
-        display.style.display='block'
+        display.style.display='flex'
         display.style.top=canvasTop+'px'
         display.style.left=(canvasLeft+canvasWidth+20)+'px'
         display.style.height=canvasHeight+'px'
