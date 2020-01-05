@@ -52,7 +52,7 @@ let pause=document.querySelector('.pause')
 let reset=document.querySelector('.reset')
 let exit=document.querySelector('.exit')
 let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,superStrong=false,laserEye=false,bombEater=false,mindControl=false,brickStormHorizontal=true,waveCount=0,waveChange=false
-let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bombDelay=1000, waveThreshold=5
+let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bombDelay=1000, waveThreshold=5, foodNear=false
 let zombieDuration=0,bomb=0,freeze=false
 let zombieCondition=15000,enemyNumber=4,freezeDuration=2000,enemyRespawnTime=5000
 let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
@@ -242,6 +242,10 @@ function draw(){
                 }
             }
     }
+    if(foodNear&&!(Math.abs(main.offsetLeft-food.offsetLeft)<=20*5&&Math.abs(main.offsetTop-food.offsetTop)<=20*5)){
+        disappointSound.currentTime=0
+        disappointSound.play()
+        }    
     if(Math.abs(main.offsetLeft-food.offsetLeft)<=20*5&&Math.abs(main.offsetTop-food.offsetTop)<=20*5){foodNear=true}
     else{foodNear=false}
     emo.style.display='none'
@@ -484,6 +488,8 @@ function check(){
                     foodDefault()
                 },500)
             }else if(mode==='super'){
+                foeSadSound.currentTime=0
+                foeSadSound.play()
                 let superTime=0
                 food.style.left='-999px'
                 if(foodType==='strong'){
@@ -542,6 +548,10 @@ function check(){
                             clearInterval(bombInterval)}
                     },100)}
                 if(foodType==='mind'){
+                    setTimeout(function(){
+                        foeDeadMindSound.currentTime=0
+                        foeDeadMindSound.play()
+                    },1000)
                     mindControl=true
                     feature.textContent='Super-Power: MindControl'
                     feature.style.animation='Fadeout 0.5s infinite'
@@ -932,7 +942,10 @@ function superCheck(){
                 if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){foeLost=true}
             })
         })
-        if(foeLost){foeDead()}
+        if(foeLost){
+            foeDeadStrongSound.currentTime=0
+            foeDeadStrongSound.play()
+            foeDead()}
         }
     if(foeSuperStrong){
         let lost=false
@@ -959,7 +972,10 @@ function superCheck(){
                 if(brickBlock){if(x.offsetTop>brickBlock.offsetTop&&x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
                 else{if(x.offsetTop<main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
                 })
-            if(foeLost){foeDead()}
+            if(foeLost){
+                foeDeadLaserSound.currentTime=0
+                foeDeadLaserSound.play()
+                foeDead()}
             }
         if(action[0]===move.down){
             let foeLost=false
@@ -971,7 +987,10 @@ function superCheck(){
                 if(brickBlock){if(x.offsetTop<brickBlock.offsetTop&&x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
                 else{if(x.offsetTop>main.offsetTop&&x.offsetLeft===main.offsetLeft){foeLost=true}}
                 })
-            if(foeLost){foeDead()}
+            if(foeLost){
+                foeDeadLaserSound.currentTime=0
+                foeDeadLaserSound.play()
+                foeDead()}
             }
         if(action[0]===move.left){
             let foeLost=false
@@ -983,7 +1002,10 @@ function superCheck(){
                 if(brickBlock){if(x.offsetLeft>brickBlock.offsetLeft&&x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){foeLost=true}}
                 else{if(x.offsetTop===main.offsetTop&&x.offsetLeft<main.offsetLeft){foeLost=true}}
                 })
-            if(foeLost){foeDead()}
+            if(foeLost){
+                foeDeadLaserSound.currentTime=0
+                foeDeadLaserSound.play()
+                foeDead()}
             }
         if(action[0]===move.right){
             let foeLost=false
@@ -995,7 +1017,10 @@ function superCheck(){
                 if(brickBlock){if(x.offsetLeft<brickBlock.offsetLeft&&x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){foeLost=true}}
                 else{if(x.offsetTop===main.offsetTop&&x.offsetLeft>main.offsetLeft){foeLost=true}}
                 })
-            if(foeLost){foeDead()}
+            if(foeLost){
+                foeDeadLaserSound.currentTime=0
+                foeDeadLaserSound.play()
+                foeDead()}
             }
         }
     if(foeLaserEye){
@@ -1859,6 +1884,8 @@ function explosion(){
                 if(lost){lose()}
                 if(foeLost){
                     if(!mindControl){score-=1}
+                    foeDeadBombSound.currentTime=0
+                    foeDeadBombSound.play()
                     foeDead()
                     }
             },300)
@@ -1899,7 +1926,10 @@ function explosion(){
                                     }
                                 }
                             })
-                        if(foeLost){foeDead()}
+                        if(foeLost){
+                            foeDeadBombSound.currentTime=0
+                            foeDeadBombSound.play()        
+                            foeDead()}
                     },300)
                     clearInterval(squareExplodeIndex)
                 }
@@ -2397,6 +2427,7 @@ function setDefault(){
         add(position,{top:main.offsetTop,left:main.offsetLeft})
         }
     foodDefault()
+    foodNear=false
     freeze=false,superStrong=false,laserEye=false,bombEater=false,mindControl=false
     foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
     foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false
@@ -2613,7 +2644,7 @@ function lose(){
         if(mode==='angry'){
             hitSound.play()
             fallSound.play()
-            if(main.offsetTop>canvasTop+canvasHeight-20){Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')}
+            if(main.offsetTop>canvasTop+canvasHeight-20){Object.values(square).forEach(x=>x.style.top=(canvasTop+canvasHeight-20)+'px')}
             else{
                 let bricks=document.querySelectorAll('.brick')
                 Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')
@@ -2621,11 +2652,12 @@ function lose(){
             Object.values(square).forEach(x=>x.style.animation='Angrylose 2s')
             setTimeout(function(){Object.values(square).forEach(x=>x.style.top=(x.offsetTop+2000)+'px')},1000)
         }else{
+            stepBack()
             if(brickStorm){
                 let bricks=document.querySelectorAll('.brick')
                 if(brickStormHorizontal){Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')}
                 else{Object.values(bricks).forEach(x=>x.style.top=(x.offsetTop-20)+'px')}
-            }else{stepBack()}
+            }
         }
         emo.textContent='X'
         emo.style.top='-1px'
@@ -2831,6 +2863,12 @@ volume.addEventListener('input',function(){
     scoreSound.volume=volume.value/100
     fallSound.volume=volume.value/100
     flySound.volume=volume.value/100
+    foeSadSound.volume=volume.value/100
+    foeDeadStrongSound.volume=volume.value/100
+    foeDeadLaserSound.volume=volume.value/100
+    foeDeadBombSound.volume=volume.value/100
+    foeDeadMindSound.volume=volume.value/100
+    disappointSound.volume=volume.value/100
     volumeDisplay.textContent=`Volume: ${volume.value}`
     },false)
 highScore.addEventListener('click',function(){
@@ -2914,6 +2952,18 @@ let fallSound=new Audio('./sound/fall.wav')
 fallSound.loop=false
 let flySound=new Audio('./sound/fly.wav')
 flySound.loop=false
+let foeSadSound=new Audio('./sound/foeSad.mp3')
+foeSadSound.loop=false
+let foeDeadStrongSound=new Audio('./sound/foeDeadStrong.mp3')
+foeDeadStrongSound.loop=false
+let foeDeadLaserSound=new Audio('./sound/foeDeadLaser.mp3')
+foeDeadLaserSound.loop=false
+let foeDeadBombSound=new Audio('./sound/foeDeadBomb.mp3')
+foeDeadBombSound.loop=false
+let foeDeadMindSound=new Audio('./sound/foeDeadMind.mp3')
+foeDeadMindSound.loop=false
+let disappointSound=new Audio('./sound/disappoint.mp3')
+disappointSound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
 let touchThreshold=window.innerWidth/20
