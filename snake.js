@@ -59,7 +59,7 @@ let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false
 let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,brickStorm=false
 let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRespawnTime=5000
 let brickWallIndex,brickWaveIndex,press=false,speedChange=false
-let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=200,scoreThreshold=5
+let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=300,scoreThreshold=5
 let canvasHeight=Math.floor(window.innerHeight/20)*20, canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20, canvasTop=0, canvasLeft=0
 let action=new Array(square.length+n+1)
 let position=new Array(square.length+n+1)
@@ -2907,13 +2907,13 @@ let mindControlSound=new Audio('./sound/mindControl.mp3')
 mindControlSound.loop=false
 let freezeSound=new Audio('./sound/freeze.mp3')
 freezeSound.loop=false
-let hitSound=new Audio('./sound/hit.mp3')
+let hitSound=new Audio('./sound/hit.wav')
 hitSound.loop=false
-let scoreSound=new Audio('./sound/score.mp3')
+let scoreSound=new Audio('./sound/score.wav')
 scoreSound.loop=false
-let fallSound=new Audio('./sound/fall.mp3')
+let fallSound=new Audio('./sound/fall.wav')
 fallSound.loop=false
-let flySound=new Audio('./sound/fly.mp3')
+let flySound=new Audio('./sound/fly.wav')
 flySound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
@@ -2931,14 +2931,10 @@ function touchEnd(e){
         if(mode==='angry'){
             if(Math.abs(spaceX)<=touchThreshold&&Math.abs(spaceY)<=touchThreshold){angryKeydown()}
         }else{
-            if(Math.abs(spaceX)>Math.abs(spaceY)){
-                if(spaceX<-touchThreshold){keydownLeft()}
-                if(spaceX>touchThreshold){keydownRight()}    
-            }
-            if(Math.abs(spaceX)<Math.abs(spaceY)){
-                if(spaceY<-touchThreshold){keydownUp()}
-                if(spaceY>touchThreshold){keydownDown()}    
-            }
+            if(spaceY<-touchThreshold){keydownUp()}
+            if(spaceY>touchThreshold){keydownDown()}    
+            if(spaceX<-touchThreshold){keydownLeft()}
+            if(spaceX>touchThreshold){keydownRight()}    
             if(Math.abs(spaceX)<=touchThreshold&&Math.abs(spaceY)<=touchThreshold){if(mode==='war'){warKeydown()}}
             }    
         }
