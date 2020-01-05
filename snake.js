@@ -2212,8 +2212,8 @@ function setCanvas(){
         }    
         }
     else{
-        canvasHeight=Math.floor(window.innerHeight/20-1)*20 
-        canvasWidth=Math.floor(window.innerWidth/20)*20 
+        canvasHeight=Math.floor(window.innerHeight/20-2)*20 
+        canvasWidth=Math.floor(window.innerWidth/20-1)*20 
         canvasTop=0 
         canvasLeft=0
         display.style.display='none'
@@ -2802,6 +2802,7 @@ volume.addEventListener('input',function(){
     laserSound.volume=volume.value/100
     largeExplosionSound.volume=volume.value/100
     mindControlSound.volume=volume.value/100
+    freezeSound.volume=volume.value/100
     volumeDisplay.textContent=`Volume: ${volume.value}`
     },false)
 highScore.addEventListener('click',function(){
