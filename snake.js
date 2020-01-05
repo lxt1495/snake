@@ -2587,8 +2587,8 @@ function stopPlaySound(){
 function lose(){
     if(!stop){
         end()
-        alert("you've lost")
         if(mode==='angry'){
+            setTimeout(function(){alert("you've lost")},500)
             if(main.offsetTop>canvasTop+canvasHeight-20){Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')}
             else{
                 let bricks=document.querySelectorAll('.brick')
@@ -2597,6 +2597,7 @@ function lose(){
             Object.values(square).forEach(x=>x.style.animation='Angrylose 2s')
             setTimeout(function(){Object.values(square).forEach(x=>x.style.top=(x.offsetTop+2000)+'px')},1000)
         }else{
+            alert("you've lost")
             if(brickStorm){
                 let bricks=document.querySelectorAll('.brick')
                 if(brickStormHorizontal){Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')}
