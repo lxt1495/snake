@@ -2145,7 +2145,6 @@ function begin(){
     if(mode==='angry'){
         brickWaveIndex=setInterval(brickWave,brickWaveSpeed)
         brickWallIndex=setInterval(brickWall,brickWallSpeed)
-        document.body.addEventListener('keydown',angryKeydown,false)
     }else{
         if(brickStorm){
             if(brickStormHorizontal){
@@ -2158,8 +2157,8 @@ function begin(){
                 brickWallIndex=setInterval(brickStormVerticalWall,brickWallSpeed) 
             }   
         }
-        document.body.addEventListener('keydown',keydown,false)
     }
+    document.body.addEventListener('keydown',keydown,false)
     runIndex=setInterval(run,speed)
     blinkIndex=setInterval(blink,blinkDelay)
     if(mode==='super'){
@@ -2175,7 +2174,6 @@ function begin(){
     }
 function end(){
     document.body.removeEventListener('keydown',keydown,false)
-    document.body.removeEventListener('keydown',angryKeydown,false)
     if(runIndex){clearInterval(runIndex)}
     if(blinkIndex){clearInterval(blinkIndex)}
     if(foeRunIndex){clearInterval(foeRunIndex)}
@@ -2186,9 +2184,53 @@ function end(){
     window.removeEventListener('touchstart',touchStart,false)
     window.removeEventListener('touchend',touchEnd,false)
     }
-function setDefault(){
+function setCanvas(){
+    if(window.innerWidth>1000){
+        canvasHeight=Math.floor(window.innerHeight/20)*20 
+        canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20 
+        canvasTop=0 
+        canvasLeft=0
+        display.style.display='block'
+        display.style.top=canvasTop+'px'
+        display.style.left=(canvasLeft+canvasWidth+20)+'px'
+        display.style.height=canvasHeight+'px'
+        display.style.width=(window.innerWidth-display.offsetLeft-20)+'px'
+        description.style.height=canvasHeight/2+'px'
+        description.style.width=(window.innerWidth-display.offsetLeft-20)+'px'
+        if(style==='timer'){
+            description.textContent=`Try to get ${winCondition} points within ${timeCondition/1000} seconds`
+        }else{
+            if(mode==='normal'){description.textContent=`Just eat`}
+            if(mode==='zombie'){description.textContent=`Reverse keydown. Zombie must eat every ${zombieCondition/1000} seconds`}
+            if(mode==='war'){description.textContent=`Press space to plant bomb`}
+            if(mode==='super'){description.textContent=`Food gives you super-power`}
+            if(mode==='angry'){description.textContent=`Press space to jump`}
+        }    
+        }
+    else{
+        canvasHeight=Math.floor(window.innerHeight/20-1)*20 
+        canvasWidth=Math.floor(window.innerWidth/20)*20 
+        canvasTop=0 
+        canvasLeft=0
+        display.style.display='none'
+    }
+    canvas.style.top=canvasTop+'px'
+    canvas.style.left=canvasLeft+'px'
+    canvas.style.height=canvasHeight+'px'
+    canvas.style.width=canvasWidth+'px'
     let bricks=document.querySelectorAll('.brick')
     if(bricks){Object.values(bricks).forEach(x=>x.remove())}
+    let enemy=document.querySelectorAll('.enemy')
+    if(enemy){Object.values(enemy).forEach(x=>x.remove())}
+    let bombs=document.querySelectorAll('.bomb')
+    if(bombs){Object.values(bombs).forEach(x=>x.remove())}
+    foe=document.querySelectorAll('.foe')
+    Object.values(foe).forEach(x=>x.style.display='none')
+    let lasers=document.querySelectorAll('.laser')
+    if(lasers){Object.values(lasers).forEach(x=>x.remove())}
+    }
+function setDefault(){
+    setCanvas()
     brickStorm=false
     switch(growthRate.value){
         case 'slow':{n=1;break}
@@ -2329,14 +2371,6 @@ function setDefault(){
         add(position,{top:main.offsetTop,left:main.offsetLeft})
         }
     foodDefault()
-    let enemy=document.querySelectorAll('.enemy')
-    if(enemy){Object.values(enemy).forEach(x=>x.remove())}
-    let bombs=document.querySelectorAll('.bomb')
-    if(bombs){Object.values(bombs).forEach(x=>x.remove())}
-    foe=document.querySelectorAll('.foe')
-    Object.values(foe).forEach(x=>x.style.display='none')
-    let lasers=document.querySelectorAll('.laser')
-    if(lasers){Object.values(lasers).forEach(x=>x.remove())}
     freeze=false,superStrong=false,laserEye=false,bombEater=false,mindControl=false
     foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
     foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false
@@ -2391,8 +2425,6 @@ function setDefault(){
     }else if(mode==='angry'){
         angrySound.play()
         feature.style.display='none'
-        let bricks=document.querySelectorAll('.brick')
-        if(bricks){Object.values(bricks).forEach(x=>x.remove())}
         brickWave()
         speed=50
         food.style.left='-999px'
@@ -2408,25 +2440,6 @@ function setDefault(){
         food.style.backgroundColor='firebrick'}
     end()
     begin()
-    canvas.style.top=canvasTop+'px'
-    canvas.style.left=canvasLeft+'px'
-    canvas.style.height=canvasHeight+'px'
-    canvas.style.width=canvasWidth+'px'
-    display.style.top=canvasTop+'px'
-    display.style.left=(canvasLeft+canvasWidth+20)+'px'
-    display.style.height=canvasHeight+'px'
-    display.style.width=(window.innerWidth-display.offsetLeft-20)+'px'
-    description.style.height=canvasHeight/2+'px'
-    description.style.width=(window.innerWidth-display.offsetLeft-20)+'px'
-    if(style==='timer'){
-        description.textContent=`Try to get ${winCondition} points within ${timeCondition/1000} seconds`
-    }else{
-        if(mode==='normal'){description.textContent=`Just eat`}
-        if(mode==='zombie'){description.textContent=`Reverse keydown. Zombie must eat every ${zombieCondition/1000} seconds`}
-        if(mode==='war'){description.textContent=`Press space to plant bomb`}
-        if(mode==='super'){description.textContent=`Food gives you super-power`}
-        if(mode==='angry'){description.textContent=`Press space to jump`}
-    }
     }
 function updateScore(){
     let newHighScore=false
