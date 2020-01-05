@@ -636,144 +636,172 @@ function stepBack(){
         redraw()
     }
     }
+function keydownUp(){
+    if(unbound.checked){
+        let abort=false
+        let bricks=document.querySelectorAll('.brick')
+        if(mode==='zombie'){
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
+        }else{
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
+        }
+        if(abort){return}
+    }
+    if(mode==='zombie'){if(action[0]&&action[0]()==='down'){return}
+                        step(move.down)}
+    else{if(action[0]&&action[0]()==='up'){return}
+         step(move.up)
+         if(mindControl){foeStep(move.up)}}
+    }
+function keydownDown(){
+    if(unbound.checked){
+        let abort=false
+        let bricks=document.querySelectorAll('.brick')
+        if(mode==='zombie'){
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
+        }else{
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
+        }
+        if(abort){return}
+    }
+    if(mode==='zombie'){if(action[0]&&action[0]()==='up'){return}
+                        step(move.up)}
+    else{if(action[0]&&action[0]()==='down'){return}
+         step(move.down)
+         if(mindControl){foeStep(move.down)}}
+    }
+function keydownLeft(){
+    if(unbound.checked){
+        let abort=false
+        let bricks=document.querySelectorAll('.brick')
+        if(mode==='zombie'){
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
+        }else{
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
+        }
+        if(abort){return}
+    }
+    if(mode==='zombie'){if(action[0]&&action[0]()==='right'){return}
+                        step(move.right)}
+    else{if(action[0]&&action[0]()==='left'){return}
+         step(move.left)
+         if(mindControl){foeStep(move.left)}}
+    }
+function keydownRight(){
+    if(unbound.checked){
+        let abort=false
+        let bricks=document.querySelectorAll('.brick')
+        if(mode==='zombie'){
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
+        }else{
+            Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
+        }
+        if(abort){return}
+    }
+    if(mode==='zombie'){if(action[0]&&action[0]()==='left'){return}
+                        step(move.left)}
+    else{if(action[0]&&action[0]()==='right'){return}
+         step(move.right)
+         if(mindControl){foeStep(move.right)}}
+    }
+function warKeydown(){
+    if(bomb){
+        bomb-=1
+        feature.textContent=`Bomb-Count: ${bomb}`
+        square[square.length-1].remove()
+        redraw()
+        let bombExplode=document.createElement('div')
+        canvas.appendChild(bombExplode)
+        bombExplode.className='bomb'
+        bombExplode.style.top=main.offsetTop+'px'
+        bombExplode.style.left=main.offsetLeft+'px'
+        let bombExplodeTime=0
+        let bombExplodeIndex=setInterval(function(){
+            if(isRunning){bombExplodeTime+=100}
+            if(bombExplodeTime>=bombDelay){
+                explosionSound.currentTime=0
+                explosionSound.play()
+                bombExplode.style.animation='Scaleout 1s'
+                setTimeout(function(){bombExplode.remove()},1000)
+                setTimeout(function(){
+                    let lost=false
+                    Object.values(canvas.children).forEach(x=>{
+                        if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
+                            &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
+                            &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
+                            &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
+                            {
+                                if(x===main||x.className==='square'){lost=true}
+                                if(x.className==='square bombcarrier'){x.remove()}
+                                if(x===food){foodDefault()}
+                                if(x.className==='enemy'){
+                                    score+=1
+                                    point.textContent=`Score: ${score}`
+                                    x.style.animation='Fadeout 0.2s'
+                                    setTimeout(function(){x.remove()},200)
+                                    let enemyTime=0
+                                    let enemyInterval=setInterval(function(){
+                                                if(isRunning){enemyTime+=100}
+                                                if(enemyTime>=enemyRespawnTime||stop){
+                                                    let newEnemy=document.createElement('div')
+                                                    canvas.appendChild(newEnemy)
+                                                    newEnemy.className='enemy'
+                                                    enemyDefault(newEnemy)    
+                                                    clearInterval(enemyInterval)
+                                                }
+                                            },100)                       
+                                }
+                                if(x.className==='brick'){
+                                    x.style.animation='Fadeout 0.7s'
+                                    setTimeout(function(){x.remove()},700)
+                                }
+                            }
+                        })
+                    square=document.querySelectorAll('.square')
+                    bomb=square.length-3
+                    feature.textContent=`Bomb-Count: ${bomb}`
+                    if(lost)(lose())
+                    else(redraw())    
+                },300)
+                clearInterval(bombExplodeIndex)
+            }
+        },100)
+    }
+    }
+function angryKeydown(e){
+    press=true
+    let pressTime=0
+    let pressIndex=setInterval(function(){
+        if(isRunning){pressTime+=100}
+        if(pressTime>=pressDelay){
+            press=false
+            clearInterval(pressIndex)
+        }
+    },100)
+    document.body.addEventListener('keydown',function checkPress(e){
+        if(e.key===' '){
+            clearInterval(pressIndex)
+            document.body.removeEventListener('keydown',checkPress,false)
+        }
+    },false)
+    if(main.offsetTop===canvasTop){return}
+    Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')
+    angryCheck()
+    }
 function keydown(e){
 if(!foeMindControl){
-    if(e.key==='ArrowUp'){
-        if(unbound.checked){
-            let abort=false
-            let bricks=document.querySelectorAll('.brick')
-            if(mode==='zombie'){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-            }else{
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-            }
-            if(abort){return}
+    if(mode==='angry'){
+        if(e.key===' '){angryKeydown()}    
         }
-        if(mode==='zombie'){if(action[0]&&action[0]()==='down'){return}
-                            step(move.down)}
-        else{if(action[0]&&action[0]()==='up'){return}
-             step(move.up)
-             if(mindControl){foeStep(move.up)}}
-        }
-    if(e.key==='ArrowDown'){
-        if(unbound.checked){
-            let abort=false
-            let bricks=document.querySelectorAll('.brick')
-            if(mode==='zombie'){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-            }else{
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-            }
-            if(abort){return}
-        }
-        if(mode==='zombie'){if(action[0]&&action[0]()==='up'){return}
-                            step(move.up)}
-        else{if(action[0]&&action[0]()==='down'){return}
-             step(move.down)
-             if(mindControl){foeStep(move.down)}}
-        }
-    if(e.key==='ArrowLeft'){
-        if(unbound.checked){
-            let abort=false
-            let bricks=document.querySelectorAll('.brick')
-            if(mode==='zombie'){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
-            }else{
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
-            }
-            if(abort){return}
-        }
-        if(mode==='zombie'){if(action[0]&&action[0]()==='right'){return}
-                            step(move.right)}
-        else{if(action[0]&&action[0]()==='left'){return}
-             step(move.left)
-             if(mindControl){foeStep(move.left)}}
-        }
-    if(e.key==='ArrowRight'){
-        if(unbound.checked){
-            let abort=false
-            let bricks=document.querySelectorAll('.brick')
-            if(mode==='zombie'){
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
-            }else{
-                Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
-            }
-            if(abort){return}
-        }
-        if(mode==='zombie'){if(action[0]&&action[0]()==='left'){return}
-                            step(move.left)}
-        else{if(action[0]&&action[0]()==='right'){return}
-             step(move.right)
-             if(mindControl){foeStep(move.right)}}
-        }
-    if(mode==='war'){
-        if(e.key===' '){
-            if(bomb){
-                bomb-=1
-                feature.textContent=`Bomb-Count: ${bomb}`
-                square[square.length-1].remove()
-                redraw()
-                let bombExplode=document.createElement('div')
-                canvas.appendChild(bombExplode)
-                bombExplode.className='bomb'
-                bombExplode.style.top=main.offsetTop+'px'
-                bombExplode.style.left=main.offsetLeft+'px'
-                let bombExplodeTime=0
-                let bombExplodeIndex=setInterval(function(){
-                    if(isRunning){bombExplodeTime+=100}
-                    if(bombExplodeTime>=bombDelay){
-                        explosionSound.currentTime=0
-                        explosionSound.play()
-                        bombExplode.style.animation='Scaleout 1s'
-                        setTimeout(function(){bombExplode.remove()},1000)
-                        setTimeout(function(){
-                            let lost=false
-                            Object.values(canvas.children).forEach(x=>{
-                                if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
-                                    &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
-                                    &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
-                                    &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
-                                    {
-                                        if(x===main||x.className==='square'){lost=true}
-                                        if(x.className==='square bombcarrier'){x.remove()}
-                                        if(x===food){foodDefault()}
-                                        if(x.className==='enemy'){
-                                            score+=1
-                                            point.textContent=`Score: ${score}`
-                                            x.style.animation='Fadeout 0.2s'
-                                            setTimeout(function(){x.remove()},200)
-                                            let enemyTime=0
-                                            let enemyInterval=setInterval(function(){
-                                                        if(isRunning){enemyTime+=100}
-                                                        if(enemyTime>=enemyRespawnTime||stop){
-                                                            let newEnemy=document.createElement('div')
-                                                            canvas.appendChild(newEnemy)
-                                                            newEnemy.className='enemy'
-                                                            enemyDefault(newEnemy)    
-                                                            clearInterval(enemyInterval)
-                                                        }
-                                                    },100)                       
-                                        }
-                                        if(x.className==='brick'){
-                                            x.style.animation='Fadeout 0.7s'
-                                            setTimeout(function(){x.remove()},700)
-                                        }
-                                    }
-                                })
-                            square=document.querySelectorAll('.square')
-                            bomb=square.length-3
-                            feature.textContent=`Bomb-Count: ${bomb}`
-                            if(lost)(lose())
-                            else(redraw())    
-                        },300)
-                        clearInterval(bombExplodeIndex)
-                    }
-                },100)
-            }
-        }
+    else{
+        if(e.key==='ArrowUp'){keydownUp()}
+        if(e.key==='ArrowDown'){keydownDown()}
+        if(e.key==='ArrowLeft'){keydownLeft()}
+        if(e.key==='ArrowRight'){keydownRight()}
+        if(e.key===' '){if(mode==='war'){warKeydown()}}    
         }
     }
-}
+    }
 function run(){
     if(mode==='angry'){
         if(!press){
@@ -2043,28 +2071,6 @@ function angryCheck(){
     Object.values(square).forEach(x=>{if(x.offsetTop>(canvasTop+canvasHeight-20)){lost=true}})
     if(lost){lose()}
 }
-function angryKeydown(e){
-    if(e.key===' '){
-        press=true
-        let pressTime=0
-        let pressIndex=setInterval(function(){
-            if(isRunning){pressTime+=100}
-            if(pressTime>=pressDelay){
-                press=false
-                clearInterval(pressIndex)
-            }
-        },100)
-        document.body.addEventListener('keydown',function checkPress(e){
-            if(e.key===' '){
-                clearInterval(pressIndex)
-                document.body.removeEventListener('keydown',checkPress,false)
-            }
-        },false)
-        if(main.offsetTop===canvasTop){return}
-        Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')
-        angryCheck()
-    }
-}
 function brickWave(){
     let brickWall=[]
     let brickNumber=Math.floor(canvasHeight/20)
@@ -2866,169 +2872,20 @@ function touchEnd(e){
     touchEndY=e.changedTouches[0].screenY
     let spaceX=touchEndX-touchStartX
     let spaceY=touchEndY-touchStartY
-
-    if(mode==='angry'){
-        if (Math.abs(spaceX)<touchThreshold&&Math.abs(spaceY)<touchThreshold){
-            press=true
-            let pressTime=0
-            let pressIndex=setInterval(function(){
-                if(isRunning){pressTime+=100}
-                if(pressTime>=pressDelay){
-                    press=false
-                    clearInterval(pressIndex)
-                }
-            },100)
-            document.body.addEventListener('keydown',function checkPress(e){
-                if(e.key===' '){
-                    clearInterval(pressIndex)
-                    document.body.removeEventListener('keydown',checkPress,false)
-                }
-            },false)
-            window.addEventListener('touchstart',function checkTouch(e){
-                clearInterval(pressIndex)
-                window.removeEventListener('touchstart',checkTouch,false)
-            },false)
-            if(main.offsetTop===canvasTop){return}
-            Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')
-            angryCheck()    
-        }
-    }else{
     if(!foeMindControl){
-        if(spaceY<-touchThreshold){
-            if(unbound.checked){
-                let abort=false
-                let bricks=document.querySelectorAll('.brick')
-                if(mode==='zombie'){
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-                }else{
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-                }
-                if(abort){return}
+        if(mode==='angry'){
+            if (Math.abs(spaceX)<=touchThreshold&&Math.abs(spaceY)<=touchThreshold){angryKeydown()}
+        }else{
+            if(spaceX>spaceY){
+                if(spaceX<-touchThreshold){keydownLeft()}
+                if(spaceX>touchThreshold){keydownRight()}    
             }
-            if(mode==='zombie'){if(action[0]&&action[0]()==='down'){return}
-                                step(move.down)}
-            else{if(action[0]&&action[0]()==='up'){return}
-                 step(move.up)
-                 if(mindControl){foeStep(move.up)}}
-        }
-        if(spaceY>touchThreshold){
-            if(unbound.checked){
-                let abort=false
-                let bricks=document.querySelectorAll('.brick')
-                if(mode==='zombie'){
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop-20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-                }else{
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===(main.offsetTop+20)&&x.offsetLeft===main.offsetLeft){abort=true}})
-                }
-                if(abort){return}
+            if(spaceX<spaceY){
+                if(spaceY<-touchThreshold){keydownUp()}
+                if(spaceY>touchThreshold){keydownDown()}    
             }
-            if(mode==='zombie'){if(action[0]&&action[0]()==='up'){return}
-                                step(move.up)}
-            else{if(action[0]&&action[0]()==='down'){return}
-                 step(move.down)
-                 if(mindControl){foeStep(move.down)}}    
+            if(Math.abs(spaceX)<=touchThreshold&&Math.abs(spaceY)<=touchThreshold){if(mode==='war'){warKeydown()}}
+            }    
         }
-        if(spaceX<-touchThreshold){
-            if(unbound.checked){
-                let abort=false
-                let bricks=document.querySelectorAll('.brick')
-                if(mode==='zombie'){
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
-                }else{
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
-                }
-                if(abort){return}
-            }
-            if(mode==='zombie'){if(action[0]&&action[0]()==='right'){return}
-                                step(move.right)}
-            else{if(action[0]&&action[0]()==='left'){return}
-                 step(move.left)
-                 if(mindControl){foeStep(move.left)}} 
-        }
-        if(spaceX>touchThreshold){
-            if(unbound.checked){
-                let abort=false
-                let bricks=document.querySelectorAll('.brick')
-                if(mode==='zombie'){
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft-20)){abort=true}})
-                }else{
-                    Object.values(bricks).forEach(x=>{if(x.offsetTop===main.offsetTop&&x.offsetLeft===(main.offsetLeft+20)){abort=true}})
-                }
-                if(abort){return}
-            }
-            if(mode==='zombie'){if(action[0]&&action[0]()==='left'){return}
-                                step(move.left)}
-            else{if(action[0]&&action[0]()==='right'){return}
-                 step(move.right)
-                 if(mindControl){foeStep(move.right)}}   
-        }
-        if(Math.abs(spaceX)<touchThreshold&&Math.abs(spaceY)<touchThreshold){
-            if(mode==='war'){
-                if(bomb){
-                    bomb-=1
-                    feature.textContent=`Bomb-Count: ${bomb}`
-                    square[square.length-1].remove()
-                    redraw()
-                    let bombExplode=document.createElement('div')
-                    canvas.appendChild(bombExplode)
-                    bombExplode.className='bomb'
-                    bombExplode.style.top=main.offsetTop+'px'
-                    bombExplode.style.left=main.offsetLeft+'px'
-                    let bombExplodeTime=0
-                    let bombExplodeIndex=setInterval(function(){
-                        if(isRunning){bombExplodeTime+=100}
-                        if(bombExplodeTime>=bombDelay){
-                            explosionSound.currentTime=0
-                            explosionSound.play()
-                            bombExplode.style.animation='Scaleout 1s'
-                            setTimeout(function(){bombExplode.remove()},1000)
-                            setTimeout(function(){
-                                let lost=false
-                                Object.values(canvas.children).forEach(x=>{
-                                    if(x.offsetTop>=(bombExplode.offsetTop-bombExplode.offsetHeight*5)
-                                        &&x.offsetTop<=(bombExplode.offsetTop+bombExplode.offsetHeight*5)
-                                        &&x.offsetLeft>=(bombExplode.offsetLeft-bombExplode.offsetWidth*5)
-                                        &&x.offsetLeft<=(bombExplode.offsetLeft+bombExplode.offsetWidth*5))
-                                        {
-                                            if(x===main||x.className==='square'){lost=true}
-                                            if(x.className==='square bombcarrier'){x.remove()}
-                                            if(x===food){foodDefault()}
-                                            if(x.className==='enemy'){
-                                                score+=1
-                                                point.textContent=`Score: ${score}`
-                                                x.style.animation='Fadeout 0.2s'
-                                                setTimeout(function(){x.remove()},200)
-                                                let enemyTime=0
-                                                let enemyInterval=setInterval(function(){
-                                                            if(isRunning){enemyTime+=100}
-                                                            if(enemyTime>=enemyRespawnTime||stop){
-                                                                let newEnemy=document.createElement('div')
-                                                                canvas.appendChild(newEnemy)
-                                                                newEnemy.className='enemy'
-                                                                enemyDefault(newEnemy)    
-                                                                clearInterval(enemyInterval)
-                                                            }
-                                                        },100)                       
-                                            }
-                                            if(x.className==='brick'){
-                                                x.style.animation='Fadeout 0.7s'
-                                                setTimeout(function(){x.remove()},700)
-                                            }
-                                        }
-                                    })
-                                square=document.querySelectorAll('.square')
-                                bomb=square.length-3
-                                feature.textContent=`Bomb-Count: ${bomb}`
-                                if(lost)(lose())
-                                else(redraw())    
-                            },300)
-                            clearInterval(bombExplodeIndex)
-                        }
-                    },100)
-                }  
-            }
-        }
-    }    
-    }
     }
 
