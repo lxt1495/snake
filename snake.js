@@ -784,6 +784,10 @@ function angryKeydown(e){
             document.body.removeEventListener('keydown',checkPress,false)
         }
     },false)
+    window.addEventListener('touchstart',function checkTouch(){
+        clearInterval(pressIndex)
+        window.removeEventListener('touchstart',checkTouch,false)
+    },false)
     if(main.offsetTop===canvasTop){return}
     Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')
     angryCheck()
