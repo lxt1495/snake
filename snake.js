@@ -2378,7 +2378,7 @@ function setDefault(){
     freeze=false,superStrong=false,laserEye=false,bombEater=false,mindControl=false
     foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
     foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false
-    brickStormHorizontal=true,waveChange=false,waveCount=0,brickWallSpeed=200,brickWaveSpeed=5000
+    press=false,brickStormHorizontal=true,waveChange=false,waveCount=0,brickWallSpeed=200,brickWaveSpeed=5000
     stopPlaySound()
     if(mode==='zombie'){
         zombieSound.play()
