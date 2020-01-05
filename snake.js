@@ -2887,13 +2887,13 @@ function touchEnd(e){
     let spaceY=touchEndY-touchStartY
     if(!foeMindControl){
         if(mode==='angry'){
-            if (Math.abs(spaceX)<=touchThreshold&&Math.abs(spaceY)<=touchThreshold){angryKeydown()}
+            if(Math.abs(spaceX)<=touchThreshold&&Math.abs(spaceY)<=touchThreshold){angryKeydown()}
         }else{
-            if(spaceX>spaceY){
+            if(Math.abs(spaceX)>Math.abs(spaceY)){
                 if(spaceX<-touchThreshold){keydownLeft()}
                 if(spaceX>touchThreshold){keydownRight()}    
             }
-            if(spaceX<spaceY){
+            if(Math.abs(spaceX)<Math.abs(spaceY)){
                 if(spaceY<-touchThreshold){keydownUp()}
                 if(spaceY>touchThreshold){keydownDown()}    
             }
