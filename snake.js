@@ -488,8 +488,10 @@ function check(){
                     foodDefault()
                 },500)
             }else if(mode==='super'){
-                foeSadSound.currentTime=0
-                foeSadSound.play()
+                if(!foeStop){
+                    foeSadSound.currentTime=0
+                    foeSadSound.play()    
+                    }
                 let superTime=0
                 food.style.left='-999px'
                 if(foodType==='strong'){
