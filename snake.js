@@ -561,6 +561,8 @@ function check(){
                     },100)}
             }
             else{
+                scoreSound.currentTime=0
+                scoreSound.play()
                 score+=1
                 point.textContent=`Score: ${score}`
                 foodDefault()
@@ -600,7 +602,10 @@ function check(){
             if(x.offsetTop===main.offsetTop&&x.offsetLeft===main.offsetLeft){lost=true}
             }
         })
-    if(lost){lose()}
+    if(lost){
+        hitSound.play()
+        lose()
+        }
     if(mode==='war'){warCheck()}
     if(mode==='super'){superCheck()}
     }
@@ -611,7 +616,10 @@ function normal(){
                                         if(x.offsetLeft<canvasLeft){lost=true}
                                         if(x.offsetLeft>canvasLeft+canvasWidth-20){lost=true}
                                     })
-    if(lost){lose()}
+    if(lost){
+        hitSound.play()
+        lose()
+        }
     }
 function unblock(){
     Object.values(canvas.children).forEach(x=>{if(x!==food&&x.className!=='brick'){
@@ -773,6 +781,8 @@ function warKeydown(){
     }
     }
 function angryKeydown(e){
+    flySound.currentTime=0
+    flySound.play()
     press=true
     let pressTime=0
     let pressIndex=setInterval(function(){
@@ -893,7 +903,10 @@ function warCheck(){
             Object.values(square).forEach(y=>{if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){lost=true}})
         })
         }
-    if(lost){lose()}
+    if(lost){
+        hitSound.play()
+        lose()
+        }
     }
 function enemyDefault(newEnemy){
     if(newEnemy){
@@ -928,7 +941,10 @@ function superCheck(){
                 if(x.offsetTop===y.offsetTop&&x.offsetLeft===y.offsetLeft){lost=true}
             })
         })
-        if(lost){lose()}
+        if(lost){
+            hitSound.play()
+            lose()
+            }
         }
     if(laserEye&&!foeStop){
         let bricks=document.querySelectorAll('.brick')
@@ -2122,6 +2138,8 @@ function brickWall(){
             })
         }
         if(passed){
+            scoreSound.currentTime=0
+            scoreSound.play()
             score+=1
             point.textContent=`Score: ${score}`
             if(score%scoreThreshold===0
@@ -2593,6 +2611,8 @@ function lose(){
         end()
         if(mode==='angry'){
             setTimeout(function(){alert("you've lost")},500)
+            hitSound.play()
+            fallSound.play()
             if(main.offsetTop>canvasTop+canvasHeight-20){Object.values(square).forEach(x=>x.style.top=(x.offsetTop-20)+'px')}
             else{
                 let bricks=document.querySelectorAll('.brick')
@@ -2808,6 +2828,10 @@ volume.addEventListener('input',function(){
     largeExplosionSound.volume=volume.value/100
     mindControlSound.volume=volume.value/100
     freezeSound.volume=volume.value/100
+    hitSound.volume=volume.value/100
+    scoreSound.volume=volume.value/100
+    fallSound.volume=volume.value/100
+    flySound.volume=volume.value/100
     volumeDisplay.textContent=`Volume: ${volume.value}`
     },false)
 highScore.addEventListener('click',function(){
@@ -2883,6 +2907,14 @@ let mindControlSound=new Audio('./sound/mindControl.mp3')
 mindControlSound.loop=false
 let freezeSound=new Audio('./sound/freeze.mp3')
 freezeSound.loop=false
+let hitSound=new Audio('./sound/hit.mp3')
+hitSound.loop=false
+let scoreSound=new Audio('./sound/score.mp3')
+scoreSound.loop=false
+let fallSound=new Audio('./sound/fall.mp3')
+fallSound.loop=false
+let flySound=new Audio('./sound/fly.mp3')
+flySound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
 let touchThreshold=window.innerWidth/20
