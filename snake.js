@@ -440,15 +440,19 @@ function draw(){
                     laser.style.width=(brickBlock.offsetLeft-main.offsetLeft)+'px'
                     }    
             }
-        }    
         }
-    if(foeMindControl){
-        emo.textContent='@'
-        emo.style.top='-1.5px'
-        emo.style.left='-0.5px'
-        emo.style.display='block'
-        eyeBall.style.display='none'
+        if(foeMindControl){
+            emo.textContent='@'
+            emo.style.top='-1.5px'
+            emo.style.left='-0.5px'
+            emo.style.display='block'
+            eyeBall.style.display='none'
+        }        
         }
+    if(mode==='angry'){
+        eyeBall.style.top='5px'
+        eyeBall.style.left='5px'
+    }
     }
 function redraw(){
     square=document.querySelectorAll('.square')
