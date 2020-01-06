@@ -1924,8 +1924,10 @@ function explosion(){
                 if(lost){lose()}
                 if(foeLost){
                     if(!mindControl){score-=1}
-                    foeDeadBombSound.currentTime=0
-                    foeDeadBombSound.play()
+                    if(!foeStop){
+                        foeDeadBombSound.currentTime=0
+                        foeDeadBombSound.play()    
+                        }
                     foeDead()
                     }
             },300)
@@ -1967,8 +1969,10 @@ function explosion(){
                                 }
                             })
                         if(foeLost){
-                            foeDeadBombSound.currentTime=0
-                            foeDeadBombSound.play()        
+                            if(!foeStop){
+                                foeDeadBombSound.currentTime=0
+                                foeDeadBombSound.play()    
+                                }
                             foeDead()}
                     },300)
                     clearInterval(squareExplodeIndex)
@@ -2528,6 +2532,8 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
+        eyeBall.style.top='5px'
+        eyeBall.style.left='5px'
     }else{
         normalSound.play()
         feature.style.display='none'
