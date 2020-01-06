@@ -567,14 +567,13 @@ function check(){
                             mindControlSound.currentTime=0                            
                             clearInterval(mindInterval)}
                     },100)}
-            }
-            else{
-                scoreSound.currentTime=0
-                scoreSound.play()
+            }else{
                 score+=1
                 point.textContent=`Score: ${score}`
                 foodDefault()
             }
+            pointSound.currentTime=0
+            pointSound.play()
             let realActionLength=0                                  
             let realPositionLength=0
             action.forEach(x=>{if(x){realActionLength+=1}})
@@ -594,6 +593,15 @@ function check(){
             if(position.length-realPositionLength<n){position.length+=n-(position.length-realPositionLength)}
             if(style==='timer'&&score>=winCondition){win()}
             if(mode==='zombie'){zombieDuration=0}
+            eyeBall.style.top='2.5px'
+            eyeBall.style.left=0
+            eyeSparkle.style.top='2.5px'
+            eyeSparkle.style.left=0
+            emo.textContent='^'
+            emo.style.top='1px'
+            emo.style.left='3px'
+            emo.style.display='block'
+            eyeBall.style.display='none'
         }
     let lost=false
     let bricks=document.querySelectorAll('.brick')
@@ -1320,8 +1328,34 @@ function foeDraw(target){
         foeEyeBall.style.display='none'
         }    
     }
+function playHappySound(){
+    switch(Math.floor(Math.random()*5+1)){
+        case 1:{
+            happySound1.currentTime=0
+            happySound1.play()
+            break}
+        case 2:{
+            happySound2.currentTime=0
+            happySound2.play()
+            break}
+        case 3:{
+            happySound3.currentTime=0
+            happySound3.play()
+            break}
+        case 4:{
+            happySound4.currentTime=0
+            happySound4.play()
+            break}
+        case 5:{
+            happySound5.currentTime=0
+            happySound5.play()
+            break}
+        default:{console.log('happySound err')}
+    }
+    }
 function foeCheck(){
     if(foeMain.offsetTop===food.offsetTop&&foeMain.offsetLeft===food.offsetLeft){
+            playHappySound()
             let superTime=0
             food.style.left='-999px'
             if(foodType==='strong'){
@@ -2875,6 +2909,12 @@ volume.addEventListener('input',function(){
     foeDeadBombSound.volume=volume.value/100
     foeDeadMindSound.volume=volume.value/100
     disappointSound.volume=volume.value/100
+    happySound1.volume=volume.value/100
+    happySound2.volume=volume.value/100
+    happySound3.volume=volume.value/100
+    happySound4.volume=volume.value/100
+    happySound5.volume=volume.value/100
+    pointSound.volume=volume.value/100
     volumeDisplay.textContent=`Volume: ${volume.value}`
     },false)
 highScore.addEventListener('click',function(){
@@ -2970,6 +3010,18 @@ let foeDeadMindSound=new Audio('./sound/foeDeadMind.mp3')
 foeDeadMindSound.loop=false
 let disappointSound=new Audio('./sound/disappoint.mp3')
 disappointSound.loop=false
+let happySound1=new Audio('./sound/happy1.mp3')
+happySound1.loop=false
+let happySound2=new Audio('./sound/happy2.mp3')
+happySound2.loop=false
+let happySound3=new Audio('./sound/happy3.mp3')
+happySound3.loop=false
+let happySound4=new Audio('./sound/happy4.mp3')
+happySound4.loop=false
+let happySound5=new Audio('./sound/happy5.mp3')
+happySound5.loop=false
+let pointSound=new Audio('./sound/point.mp3')
+pointSound.loop=false
 
 let touchStartX=0,touchStartY=0,touchEndX=0,touchEndY=0
 let touchThreshold=window.innerWidth/20
