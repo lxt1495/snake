@@ -242,10 +242,6 @@ function draw(){
                 }
             }
     }
-    if(foodNear&&!(Math.abs(main.offsetLeft-food.offsetLeft)<=20*5&&Math.abs(main.offsetTop-food.offsetTop)<=20*5)){
-        disappointSound.currentTime=0
-        disappointSound.play()
-        }    
     if(Math.abs(main.offsetLeft-food.offsetLeft)<=20*5&&Math.abs(main.offsetTop-food.offsetTop)<=20*5){foodNear=true}
     else{foodNear=false}
     emo.style.display='none'
@@ -1338,6 +1334,8 @@ function foeCheck(){
                 let superStrongInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
+                        disappointSound.currentTime=0
+                        disappointSound.play()                
                         foodDefault()
                         foeSuperStrong=false
                         feature.textContent='Super-Power:'
@@ -1358,6 +1356,8 @@ function foeCheck(){
                 let laserInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
+                        disappointSound.currentTime=0
+                        disappointSound.play()                
                         foodDefault()
                         foeLaserEye=false
                         feature.textContent='Super-Power:'
@@ -1377,6 +1377,8 @@ function foeCheck(){
                 let bombInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
+                        disappointSound.currentTime=0
+                        disappointSound.play()                
                         foodDefault()
                         foeBombEater=false
                         feature.textContent='Super-Power:'
@@ -1394,6 +1396,8 @@ function foeCheck(){
                 let mindInterval=setInterval(function(){
                     if(isRunning){superTime+=100}
                     if(superTime>=superDuration||stop){
+                        disappointSound.currentTime=0
+                        disappointSound.play()                
                         foodDefault()
                         foeMindControl=false
                         feature.textContent='Super-Power:'
