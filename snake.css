@@ -270,6 +270,8 @@ label{
     background-color: firebrick;
     border-radius: 50%;
     animation: Fadein 1s;
+    background-image: url('./texture/food.jpg');
+    background-size: contain;
     z-index: 5;
 }
 .bomb{

@@ -661,11 +661,10 @@ function step(stepMove){
     }
     }
 function stepBack(){
-    if(!stop){
-        action.forEach((x,i)=>{action[i]=action[i+2]})
-        position.forEach((x,i)=>{position[i]=position[i+1]})
-        redraw()
-    }
+    action.forEach((x,i)=>{action[i]=action[i+1]})
+    position.forEach((x,i)=>{position[i]=position[i+1]})
+    if(stop){action.forEach((x,i)=>{action[i]=action[i+1]})}
+    redraw()
     }
 function keydownUp(){
     if(unbound.checked){
@@ -2689,7 +2688,9 @@ function stopPlaySound(){
 function lose(){
     if(!stop){
         end()
-        setTimeout(function(){alert("you've lost")},500)
+        isRunning=false
+        stop=true
+        setTimeout(function(){alert("you've lost")},100)
         if(mode==='angry'){
             hitSound.play()
             fallSound.play()
@@ -2701,7 +2702,7 @@ function lose(){
             Object.values(square).forEach(x=>x.style.animation='Angrylose 2s')
             setTimeout(function(){Object.values(square).forEach(x=>x.style.top=(x.offsetTop+2000)+'px')},1000)
         }else{
-            stepBack()
+            if(!foeMindControl){stepBack()}
             if(brickStorm){
                 let bricks=document.querySelectorAll('.brick')
                 if(brickStormHorizontal){Object.values(bricks).forEach(x=>x.style.left=(x.offsetLeft+20)+'px')}
@@ -2713,8 +2714,6 @@ function lose(){
         emo.style.left='3px'
         emo.style.display='block'
         eyeBall.style.display='none'
-        isRunning=false
-        stop=true
         updateScore()
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
@@ -2728,14 +2727,14 @@ function lose(){
 function win(){
     if(!stop){
         end()
+        isRunning=false
+        stop=true
         alert("you've won")
         emo.textContent='^'
         emo.style.top='1px'
         emo.style.left='3px'
         emo.style.display='block'
         eyeBall.style.display='none'
-        isRunning=false
-        stop=true
         updateScore()
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
