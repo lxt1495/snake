@@ -61,8 +61,8 @@ let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRe
 let brickWallIndex,brickWaveIndex,press=false,speedChange=false
 let brickGapLength=5,brickWallSpeed=200,brickWaveSpeed=5000,pressDelay=300,scoreThreshold=5
 let canvasHeight=Math.floor(window.innerHeight/20)*20, canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20, canvasTop=0, canvasLeft=0
-let action=new Array(square.length+n+1)
-let position=new Array(square.length+n+1)
+let action=new Array(square.length+n+5)
+let position=new Array(square.length+n+5)
 let move={
     up(x) { if(x){x.style.top=`${x.offsetTop-20}px`}
             return 'down'},
@@ -662,7 +662,7 @@ function step(stepMove){
     }
 function stepBack(){
     if(!stop){
-        action.forEach((x,i)=>{action[i]=action[i+1]})
+        action.forEach((x,i)=>{action[i]=action[i+2]})
         position.forEach((x,i)=>{position[i]=position[i+1]})
         redraw()
     }
@@ -2453,8 +2453,8 @@ function setDefault(){
     }
     square = document.querySelectorAll('.square')
     Object.values(square).forEach(x=>x.style.animation='')
-    action=new Array(square.length+n+1)
-    position=new Array(square.length+n+1)
+    action=new Array(square.length+n+5)
+    position=new Array(square.length+n+5)
     score=0
     now=0
     isRunning=true

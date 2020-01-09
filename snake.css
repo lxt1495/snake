@@ -160,6 +160,8 @@ label{
     margin:none;
     background-color: lightyellow;
     touch-action: manipulation;
+    background-image: url('./texture/BG.jpg');
+    background-size: contain;
 }
 .brick{
     position: absolute;
