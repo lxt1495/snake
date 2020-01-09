@@ -637,6 +637,7 @@ function normal(){
                                     })
     if(lost){
         hitSound.play()
+        action.forEach((x,i)=>{action[i]=action[i+1]})
         lose()
         }
     }
@@ -663,7 +664,6 @@ function step(stepMove){
 function stepBack(){
     action.forEach((x,i)=>{action[i]=action[i+1]})
     position.forEach((x,i)=>{position[i]=position[i+1]})
-    if(stop){action.forEach((x,i)=>{action[i]=action[i+1]})}
     redraw()
     }
 function keydownUp(){
@@ -2234,10 +2234,10 @@ function foodDefault(){
     if(mode==='super'){
         Object.values(foe).forEach(x=>{if(x&&x.offsetTop===food.offsetTop&&x.offsetLeft===food.offsetLeft){foodDefault()}})
         switch(Math.floor(Math.random()*4+1)){
-            case 1:{foodType='strong';food.style.backgroundColor='green';break}
-            case 2:{foodType='laser';food.style.backgroundColor='maroon';break}
-            case 3:{foodType='bomb';food.style.backgroundColor='black';break}
-            case 4:{foodType='mind';food.style.backgroundColor='purple';break}
+            case 1:{foodType='strong';break}
+            case 2:{foodType='laser';break}
+            case 3:{foodType='bomb';break}
+            case 4:{foodType='mind';break}
             default:{console.log('food err')}
         }
     }
@@ -2487,7 +2487,7 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='purple'}})
         eyeBall.style.backgroundColor='red'
         emo.style.color='red'
-        food.style.backgroundColor='lightcoral'
+        canvas.style.backgroundImage="url('./texture/bgZombie.jpg')"
     }else if(mode==='war'){
         warSound.play()
         bomb=0
@@ -2502,7 +2502,7 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='green'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
-        food.style.backgroundColor='black'
+        canvas.style.backgroundImage="url('./texture/bgWar.jpg')"
     }else if(mode==='super'){
         superSound.play()
         feature.style.display='block'
@@ -2525,6 +2525,7 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
+        canvas.style.backgroundImage="url('./texture/bgSuper.jpg')"
     }else if(mode==='angry'){
         angrySound.play()
         feature.style.display='none'
@@ -2536,13 +2537,15 @@ function setDefault(){
         emo.style.color='black'
         eyeBall.style.top='5px'
         eyeBall.style.left='5px'
+        canvas.style.backgroundImage="url('./texture/bgAngry.png')"
     }else{
         normalSound.play()
         feature.style.display='none'
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
-        food.style.backgroundColor='firebrick'}
+        canvas.style.backgroundImage="url('./texture/bgNormal.jpg')"
+        }
     end()
     begin()
     }
@@ -2714,6 +2717,7 @@ function lose(){
         emo.style.left='3px'
         emo.style.display='block'
         eyeBall.style.display='none'
+        description.textContent='Click anywhere to return menu'
         updateScore()
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
@@ -2735,6 +2739,7 @@ function win(){
         emo.style.left='3px'
         emo.style.display='block'
         eyeBall.style.display='none'
+        description.textContent='Click anywhere to return menu'
         updateScore()
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
