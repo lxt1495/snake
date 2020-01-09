@@ -457,8 +457,11 @@ function draw(){
 function redraw(){
     square=document.querySelectorAll('.square')
     Object.values(square).forEach((x,i)=>{
-        x.style.top=position[i].top+'px'
-        x.style.left=position[i].left+'px'})
+        if(position[i]){
+            x.style.top=position[i].top+'px'
+            x.style.left=position[i].left+'px'
+        }
+    })
     draw()
     }
 function check(){
