@@ -17,6 +17,7 @@ let styleSurvivor=document.querySelector('.style-survivor')
 let styleTimer=document.querySelector('.style-timer')
 let labelGrowthRate=document.querySelector('.label-growth-rate')
 let labelSwiftness=document.querySelector('.label-swiftness')
+let labelEnemyNumber=document.querySelector('.label-enemy-number')
 let labelEnemySpeed=document.querySelector('.label-enemy-speed')
 let labelMap=document.querySelector('.label-map')
 let labelUnbound=document.querySelector('.label-unbound')
@@ -27,6 +28,7 @@ let swiftWalk=document.getElementById('walk')
 let swiftRun=document.getElementById('run')
 let swiftFly=document.getElementById('fly')
 let swiftSpeedster=document.getElementById('speedster')
+let enemyNumber=document.querySelector('.enemy-number')
 let enemySpeed=document.querySelector('.enemy-speed')
 let map=document.querySelector('.map')
 let mapNone=document.getElementById('none')
@@ -54,7 +56,7 @@ let exit=document.querySelector('.exit')
 let score=0,now=0,isRunning=false,stop=true,runIndex,blinkIndex,mode,style,superStrong=false,laserEye=false,bombEater=false,mindControl=false,brickStormHorizontal=true,waveCount=0,waveChange=false
 let winCondition=20, timeCondition=60000, n=1, speed=1000, blinkDelay=3000, bombDelay=1000, waveThreshold=5, foodNear=false
 let zombieDuration=0,bomb=0,freeze=false
-let zombieCondition=15000,enemyNumber=4,freezeDuration=2000,enemyRespawnTime=5000
+let zombieCondition=15000,enemyCounter=4,freezeDuration=2000,enemyRespawnTime=5000
 let foeRunIndex,foeBlinkIndex,explosionIndex,foeBlockUp=false,foeBlockDown=false,foeBlockLeft=false,foeBlockRight=false,foeStop=false
 let foeSuperStrong=false,foeLaserEye=false,foeBombEater=false,foeMindControl=false,foodType,brickStorm=false
 let foeSpeed=300,foeBlinkDelay=2000,explosionDelay=2000,superDuration=5000,foeRespawnTime=5000
@@ -2404,6 +2406,12 @@ function setDefault(){
         case 'speedster':{speed=75;break}
         default:{console.log('swiftness err');break}
     }
+    switch(enemyNumber.value){
+        case '3':{enemyCounter=3;break}
+        case '4':{enemyCounter=4;break}
+        case '5':{enemyCounter=5;break}
+        default:{console.log('enemy number err');break}
+    }
     switch(enemySpeed.value){
         case 'normal':{foeSpeed=200;break}
         case 'fast':{foeSpeed=100;break}
@@ -2548,7 +2556,7 @@ function setDefault(){
         bomb=0
         feature.style.display='block'
         feature.textContent='Bomb-Count:'
-        for(let i=0; i<enemyNumber; i++){
+        for(let i=0; i<enemyCounter; i++){
             let newEnemy=document.createElement('div')
             canvas.appendChild(newEnemy)
             newEnemy.className='enemy'
@@ -2855,6 +2863,7 @@ modeNormal.addEventListener('click',function(){
     gameStyle.style.display='block'
     labelGrowthRate.style.display='block'
     labelSwiftness.style.display='block'
+    labelEnemyNumber.style.display='none'
     labelEnemySpeed.style.display='none'
     labelMap.style.display='block'
     labelUnbound.style.display='block'
@@ -2873,6 +2882,7 @@ modeZombie.addEventListener('click',function(){
     gameStyle.style.display='block'
     labelGrowthRate.style.display='block'
     labelSwiftness.style.display='block'
+    labelEnemyNumber.style.display='none'
     labelEnemySpeed.style.display='none'
     labelMap.style.display='block'
     labelUnbound.style.display='block'
@@ -2891,6 +2901,7 @@ modeWar.addEventListener('click',function(){
     gameStyle.style.display='block'
     labelGrowthRate.style.display='none'
     labelSwiftness.style.display='block'
+    labelEnemyNumber.style.display='block'
     labelEnemySpeed.style.display='none'
     labelMap.style.display='block'
     labelUnbound.style.display='none'
@@ -2909,6 +2920,7 @@ modeSuper.addEventListener('click',function(){
     gameStyle.style.display='block'
     labelGrowthRate.style.display='none'
     labelSwiftness.style.display='block'
+    labelEnemyNumber.style.display='none'
     labelEnemySpeed.style.display='block'
     labelMap.style.display='block'
     labelUnbound.style.display='none'
