@@ -302,8 +302,10 @@ label{
     margin:none;
     width: 20px;
     height: 20px;  
-    background-color:blue;
     border-radius: 50%;
+    background-color: rgb(0,0,0,0);
+    background-image: url('./texture/enemy.png');
+    background-size: 100% 100%;
     animation: Fadein 1s;
     z-index: 7;
 }

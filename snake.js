@@ -447,6 +447,56 @@ function draw(){
             emo.style.left='-0.5px'
             emo.style.display='block'
             eyeBall.style.display='none'
+        }
+        if(foeSuperStrong||foeLaserEye||foeBombEater){
+            eyeSparkle.style.display='none'
+            eyeBall.style.width='5px'
+            eyeBall.style.height='5px'
+            if(action[0]===move.up){
+                eyeBall.style.top=0
+                eyeBall.style.left=0
+            }
+            if(action[0]===move.down){
+                eyeBall.style.top='10px'
+                eyeBall.style.left=0
+            }
+            if(action[0]===move.left){
+                eyeBall.style.top='5px'
+                eyeBall.style.left='-5px'
+            }
+            if(action[0]===move.right){
+                eyeBall.style.top='5px'
+                eyeBall.style.left='5px'
+            }
+        }
+        if(superStrong||laserEye||bombEater||mindControl){
+            eyeSparkle.style.display='block'
+            eyeBall.style.width='10px'
+            eyeBall.style.height='10px'
+            if(action[0]===move.up){
+                eyeBall.style.top=0
+                eyeBall.style.left=0
+                eyeSparkle.style.top=0
+                eyeSparkle.style.left=0
+            }
+            if(action[0]===move.down){
+                eyeBall.style.top='5px'
+                eyeBall.style.left=0
+                eyeSparkle.style.top='5px'
+                eyeSparkle.style.left=0
+            }
+            if(action[0]===move.left){
+                eyeBall.style.top='2.5px'
+                eyeBall.style.left='-2.5px'
+                eyeSparkle.style.top='2.5px'
+                eyeSparkle.style.left='-2.5px'
+            }
+            if(action[0]===move.right){
+                eyeBall.style.top='2.5px'
+                eyeBall.style.left='2.5px'
+                eyeSparkle.style.top='2.5px'
+                eyeSparkle.style.left='2.5px'
+            }
         }        
         }
     if(mode==='angry'){
@@ -2292,8 +2342,8 @@ function end(){
     }
 function setCanvas(){
     if(window.innerWidth>1000){
-        canvasHeight=Math.floor(window.innerHeight/20)*20 
-        canvasWidth=Math.floor((window.innerWidth/20)*5/6)*20 
+        canvasHeight=Math.ceil(window.innerHeight/20)*20 
+        canvasWidth=Math.ceil((window.innerWidth/20)*5/6)*20 
         canvasTop=0 
         canvasLeft=0
         display.style.display='flex'
