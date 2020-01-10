@@ -529,9 +529,13 @@ function check(){
     if(main.offsetTop===food.offsetTop&&main.offsetLeft===food.offsetLeft)
         {
             if(mode==='war'){
-                if(bomb<3){n=1;bomb+=1}
+                if(bomb<3){n=1;
+                    bomb+=1
+                    feature.textContent=`Bomb-Count: ${bomb}`
+                    feature.style.animation='Score 1s'
+                    setTimeout(function(){feature.style.animation=''},1000)                
+                }
                 else{n=0}
-                feature.textContent=`Bomb-Count: ${bomb}`
                 freeze=true
                 let freezeTime=0
                 let freezeIndex=setInterval(function(){
@@ -557,7 +561,7 @@ function check(){
                 if(foodType==='strong'){
                     superStrong=true
                     feature.textContent='Super-Power: SuperStrong'
-                    feature.style.animation='Fadeout 0.5s infinite'
+                    feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                     eyeBall.style.backgroundColor='green'
                     Object.values(square).forEach(x=>{x.style.animation='Superstrong 1s';x.style.transform='scale(1.5)';x.style.backgroundColor='green'})
                     superStrongSound.play()
@@ -577,7 +581,7 @@ function check(){
                 if(foodType==='laser'){
                     laserEye=true
                     feature.textContent='Super-Power: LaserEye'
-                    feature.style.animation='Fadeout 0.5s infinite'
+                    feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                     eyeBall.style.backgroundColor='red'
                     laserSound.play()
                     let laserInterval=setInterval(function(){
@@ -595,7 +599,7 @@ function check(){
                 if(foodType==='bomb'){
                     bombEater=true
                     feature.textContent='Super-Power: BombEater'
-                    feature.style.animation='Fadeout 0.5s infinite'
+                    feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                     eyeBall.style.backgroundColor='purple'
                     Object.values(square).forEach(x=>x.style.backgroundColor='red')
                     let bombInterval=setInterval(function(){
@@ -616,7 +620,7 @@ function check(){
                     },1000)
                     mindControl=true
                     feature.textContent='Super-Power: MindControl'
-                    feature.style.animation='Fadeout 0.5s infinite'
+                    feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                     eyeBall.style.backgroundColor='purple'
                     mindControlSound.play()
                     let mindInterval=setInterval(function(){
@@ -923,17 +927,20 @@ function run(){
         }
     }
     now+=speed
-    if(style==='survivor'){
-        let second=Math.floor((now/1000)%60)
-        let minute=Math.floor((now/1000)/60)
-        time.textContent=`Time: ${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`    
-        }
-    if(style==='timer'){
-        let timeLeft=timeCondition-now
-        if(timeLeft<=0){if(score<winCondition){lose()}}
-        let second=Math.floor((timeLeft/1000)%60)
-        let minute=Math.floor((timeLeft/1000)/60)
-        time.textContent=`Time: ${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`    
+    if(now%1000===0){
+        if(style==='survivor'){
+            let second=Math.floor((now/1000)%60)
+            let minute=Math.floor((now/1000)/60)
+            time.textContent=`${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`    
+            }
+        if(style==='timer'){
+            let timeLeft=timeCondition-now
+            if(timeLeft<=0){if(score<winCondition){lose()}}
+            let second=Math.floor((timeLeft/1000)%60)
+            let minute=Math.floor((timeLeft/1000)/60)
+            time.textContent=`${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`    
+            }
+        time.style.animation='Time 1s infinite' 
         }
     if(mode==='zombie'){
         zombieDuration+=speed
@@ -1423,7 +1430,7 @@ function foeCheck(){
             if(foodType==='strong'){
                 foeSuperStrong=true
                 feature.textContent='Enemy-Power: SuperStrong'
-                feature.style.animation='Fadeout 0.5s infinite'
+                feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                 foeEyeBall.style.backgroundColor='green'
                 Object.values(foe).forEach(x=>{x.style.animation='Superstrong 1s';x.style.transform='scale(1.5)';x.style.backgroundColor='green'})
                 superStrongSound.play()
@@ -1446,7 +1453,7 @@ function foeCheck(){
             if(foodType==='laser'){
                 foeLaserEye=true
                 feature.textContent='Enemy-Power: LaserEye'
-                feature.style.animation='Fadeout 0.5s infinite'
+                feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                 foeEyeBall.style.backgroundColor='red'
                 laserSound.play()
                 let laserInterval=setInterval(function(){
@@ -1467,7 +1474,7 @@ function foeCheck(){
             if(foodType==='bomb'){
                 foeBombEater=true
                 feature.textContent='Enemy-Power: BombEater'
-                feature.style.animation='Fadeout 0.5s infinite'
+                feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                 foeEyeBall.style.backgroundColor='purple'
                 Object.values(foe).forEach(x=>x.style.backgroundColor='red')
                 let bombInterval=setInterval(function(){
@@ -1486,7 +1493,7 @@ function foeCheck(){
             if(foodType==='mind'){
                 foeMindControl=true
                 feature.textContent='Enemy-Power: MindControl'
-                feature.style.animation='Fadeout 0.5s infinite'
+                feature.style.animation=`Fadeout 0.5s 3, Feature ${superDuration/1000}s`
                 foeEyeBall.style.backgroundColor='purple'
                 mindControlSound.play()
                 let mindInterval=setInterval(function(){
@@ -2346,6 +2353,7 @@ function end(){
     if(brickWallIndex){clearInterval(brickWallIndex)}
     window.removeEventListener('touchstart',touchStart,false)
     window.removeEventListener('touchend',touchEnd,false)
+    time.style.animation=''
     }
 function setCanvas(){
     if(window.innerWidth>1000){
@@ -2358,8 +2366,6 @@ function setCanvas(){
         display.style.left=(canvasLeft+canvasWidth+20)+'px'
         display.style.height=canvasHeight+'px'
         display.style.width=(window.innerWidth-display.offsetLeft-20)+'px'
-        description.style.height=canvasHeight/2+'px'
-        description.style.width=(window.innerWidth-display.offsetLeft-20)+'px'
         if(style==='timer'){
             description.textContent=`Try to get ${winCondition} points within ${timeCondition/1000} seconds`
         }else{
@@ -2408,7 +2414,7 @@ function setDefault(){
         case 'walk':{speed=500;break}
         case 'run':{speed=250;break}
         case 'fly':{speed=125;break}
-        case 'speedster':{speed=75;break}
+        case 'speedster':{speed=62.5;break}
         default:{console.log('swiftness err');break}
     }
     switch(enemyNumber.value){
@@ -2526,7 +2532,8 @@ function setDefault(){
     isRunning=true
     stop=false
     point.textContent=`Score: ${score}`
-    time.textContent='Time:'
+    time.textContent='00:00'
+    time.style.animation=''
     emo.style.display='none'
     eyeBall.style.display='block'
     Object.values(square).forEach(x=>{

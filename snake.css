@@ -325,27 +325,57 @@ label{
     flex-flow: column nowrap;
     justify-content: space-around;
     touch-action: manipulation;
+    background-color: rgb(0,0,0,0);
+    background-image: url('./texture/display.png');
+    background-size: 100% 50%;
+    background-repeat: no-repeat;
+}
+.pause{
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
 }
 .point{
+    position: absolute;
+    top: 42%;
+    left: 30%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 3vh;
     color: lightgreen;
     border:none;
     padding:none;
-    margin:none;
+    margin:auto;
 }
 .time{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2.5vh;
     color:lightyellow;
     border:none;
     padding:none;
-    margin:none;
+    margin:auto;
 }
 .feature{
+    position: absolute;
+    top: 12%;
+    left: 27%;
+    width: 45%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 2vh;
+    line-height: 5.3vh;
+    text-align: center;
     display:none;
     color: red;
     border:none;
     padding:none;
-    margin:none;
+    margin:auto;
 }
 .description{
+    position: absolute;
+    top: 55%;
+    left: 0%;
+    height: 35%;
+    width: 100%;
     color: lightcoral;
     border: 2px dashed yellowgreen;
     padding:none;
@@ -399,4 +429,17 @@ label{
     60%{transform:scale(4)}
     100%{transform:scale(1)}
 }
+@keyframes Time{
+    0%{opacity: 0; transform: translateY(20px);}
+    45%{opacity: 1; transform: translateY(0px);}
+    55%{opacity: 1; transform: translateY(0px);}
+    100%{opacity: 0; transform: translateY(-20px);}
+}
+@keyframes Feature{
+    0%{transform: scale(1);}
+    20%{transform: scale(1.5);}
+    100%{transform: scale(1);}
+}
+
+
 
