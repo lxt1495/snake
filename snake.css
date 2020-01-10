@@ -321,9 +321,9 @@ label{
 }
 .display{
     position:absolute;
-    display:flex;
-    flex-flow: column nowrap;
-    justify-content: space-around;
+    border:none;
+    padding:none;
+    margin:none;
     touch-action: manipulation;
     background-color: rgb(0,0,0,0);
     background-image: url('./texture/display.png');
@@ -339,42 +339,45 @@ label{
 .point{
     position: absolute;
     top: 42%;
-    left: 30%;
+    left: 25%;
+    width: 50%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 3vh;
     color: lightgreen;
+    text-align: center;
     border:none;
     padding:none;
-    margin:auto;
+    margin:none;
 }
 .time{
     font-family: Arial, Helvetica, sans-serif;
     font-size: 2.5vh;
     color:lightyellow;
+    text-align: center;
     border:none;
     padding:none;
-    margin:auto;
+    margin:none;
 }
 .feature{
     position: absolute;
+    display:none;
     top: 12%;
     left: 27%;
-    width: 45%;
+    width: 46%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 2vh;
     line-height: 5.3vh;
-    text-align: center;
-    display:none;
     color: red;
+    text-align: center;
     border:none;
     padding:none;
-    margin:auto;
+    margin:none;
 }
 .description{
     position: absolute;
-    top: 55%;
+    top: 50%;
     left: 0%;
-    height: 35%;
+    height: 50%;
     width: 100%;
     color: lightcoral;
     border: 2px dashed yellowgreen;
@@ -425,8 +428,8 @@ label{
 }
 @keyframes Score{
     0%{transform:scale(1)}
-    50%{transform:scale(4)}
-    60%{transform:scale(4)}
+    50%{transform:scale(3)}
+    60%{transform:scale(3)}
     100%{transform:scale(1)}
 }
 @keyframes Time{
