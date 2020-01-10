@@ -274,7 +274,7 @@ label{
     margin:none;
     width: 20px;
     height: 20px;  
-    transform: scale(2);
+    transform: scale(1.5);
     animation: Fadein 1s;
     background-color: rgb(0,0,0,0);
     background-image: url('./texture/foodNormal.png');
@@ -289,6 +289,7 @@ label{
     width: 20px;
     height: 20px;  
     border-radius: 50%;
+    transform: scale(1.5);
     animation: Fadeout 0.5s infinite;
     background-color: rgb(0,0,0,0);
     background-image: url('./texture/bomb.png');
@@ -391,5 +392,11 @@ label{
     10%{transform: translateY(-200px)}
     12%{transform: translateY(-200px)}
     100%{transform: translateY(+2000px)}
+}
+@keyframes Score{
+    0%{transform:scale(1)}
+    50%{transform:scale(4)}
+    60%{transform:scale(4)}
+    100%{transform:scale(1)}
 }
 

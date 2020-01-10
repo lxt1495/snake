@@ -502,6 +502,9 @@ function draw(){
         }        
         }
     if(mode==='angry'){
+        eyeSparkle.style.display='none'
+        eyeBall.style.width='5px'
+        eyeBall.style.height='5px'
         eyeBall.style.top='5px'
         eyeBall.style.left='5px'
     }
@@ -515,6 +518,12 @@ function redraw(){
         }
     })
     draw()
+    }
+function scoreUp(){
+    score+=1
+    point.textContent=`Score: ${score}`
+    point.style.animation='Score 1s'
+    setTimeout(function(){point.style.animation=''},1000)
     }
 function check(){
     if(main.offsetTop===food.offsetTop&&main.offsetLeft===food.offsetLeft)
@@ -623,8 +632,7 @@ function check(){
                             clearInterval(mindInterval)}
                     },100)}
             }else{
-                score+=1
-                point.textContent=`Score: ${score}`
+                scoreUp()
                 foodDefault()
             }
             pointSound.currentTime=0
@@ -818,8 +826,7 @@ function warKeydown(){
                                 if(x.className==='square bombcarrier'){x.remove()}
                                 if(x===food){foodDefault()}
                                 if(x.className==='enemy'){
-                                    score+=1
-                                    point.textContent=`Score: ${score}`
+                                    scoreUp()
                                     x.style.animation='Fadeout 0.2s'
                                     setTimeout(function(){x.remove()},200)
                                     let enemyTime=0
@@ -919,21 +926,21 @@ function run(){
     if(style==='survivor'){
         let second=Math.floor((now/1000)%60)
         let minute=Math.floor((now/1000)/60)
-        time.textContent=`Time: ${minute}:${second}`    
+        time.textContent=`Time: ${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`    
         }
     if(style==='timer'){
         let timeLeft=timeCondition-now
         if(timeLeft<=0){if(score<winCondition){lose()}}
         let second=Math.floor((timeLeft/1000)%60)
         let minute=Math.floor((timeLeft/1000)/60)
-        time.textContent=`Time: ${minute}:${second}`    
+        time.textContent=`Time: ${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`    
         }
     if(mode==='zombie'){
         zombieDuration+=speed
         if(zombieDuration>=zombieCondition){lose()}
         let second=Math.floor((zombieDuration/1000)%60)
         let minute=Math.floor((zombieDuration/1000)/60)
-        feature.textContent=`Zombie-Time: ${minute}:${second}`
+        feature.textContent=`Zombie-Time: ${minute<10?`0${minute}`:minute}:${second<10?`0${second}`:second}`
         }
     if(mode==='war'&&!freeze){
         let enemy=document.querySelectorAll('.enemy')
@@ -1922,8 +1929,7 @@ function foeDead(){
         foeEyeBall.style.display='none'
         Object.values(foe).forEach(x=>x.style.animation='Fadeout 0.5s infinite')
         foeStop=true
-        score+=1
-        point.textContent=`Score: ${score}`
+        scoreUp()
         if(mindControl){mindControl=false}
         if(foeMindControl){foeMindControl=false}
         let foeDeadTime=0
@@ -2272,8 +2278,7 @@ function brickWall(){
         if(passed){
             scoreSound.currentTime=0
             scoreSound.play()
-            score+=1
-            point.textContent=`Score: ${score}`
+            scoreUp()
             if(score%scoreThreshold===0
                 &&brickWallSpeed>100
                 &&brickWaveSpeed>3000
@@ -2600,6 +2605,9 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
+        eyeSparkle.style.display='none'
+        eyeBall.style.width='5px'
+        eyeBall.style.height='5px'
         eyeBall.style.top='5px'
         eyeBall.style.left='5px'
         canvas.style.backgroundImage="url('./texture/bgAngry.png')"
