@@ -2487,7 +2487,7 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='purple'}})
         eyeBall.style.backgroundColor='red'
         emo.style.color='red'
-        canvas.style.backgroundImage="url('./texture/bgZombie.jpg')"
+        canvas.style.backgroundImage="url('./texture/bgZombie.png')"
     }else if(mode==='war'){
         warSound.play()
         bomb=0
@@ -2525,7 +2525,7 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
-        canvas.style.backgroundImage="url('./texture/bgSuper.jpg')"
+        canvas.style.backgroundImage="url('./texture/bgSuper.png')"
     }else if(mode==='angry'){
         angrySound.play()
         feature.style.display='none'
