@@ -751,6 +751,7 @@ function warKeydown(){
             if(bombExplodeTime>=bombDelay){
                 explosionSound.currentTime=0
                 explosionSound.play()
+                bombExplode.style.backgroundImage="url('./texture/explosion.png')"
                 bombExplode.style.animation='Scaleout 1s'
                 setTimeout(function(){bombExplode.remove()},1000)
                 setTimeout(function(){
@@ -1904,6 +1905,7 @@ function explosion(){
         if(bombExplodeTime>=bombDelay){
             explosionSound.currentTime=0
             explosionSound.play()
+            bombExplode.style.backgroundImage="url('./texture/explosion.png')"
             bombExplode.style.animation='Scaleout 1s'
             setTimeout(function(){bombExplode.remove()},1000)
             setTimeout(function(){
@@ -1952,6 +1954,7 @@ function explosion(){
                     squareExplode.className='bomb'
                     squareExplode.style.top=x.offsetTop+'px'
                     squareExplode.style.left=x.offsetLeft+'px'
+                    squareExplode.style.backgroundImage="url('./texture/largeExplosion.png')"
                     squareExplode.style.animation='Superscale 1s'        
                     setTimeout(function(){squareExplode.remove()},1000)
                     setTimeout(function(){
@@ -1998,6 +2001,7 @@ function explosion(){
                     foeExplode.className='bomb'
                     foeExplode.style.top=x.offsetTop+'px'
                     foeExplode.style.left=x.offsetLeft+'px'
+                    foeExplode.style.backgroundImage="url('./texture/largeExplosion.png')"
                     foeExplode.style.animation='Superscale 1s'        
                     setTimeout(function(){foeExplode.remove()},1000)
                     setTimeout(function(){
@@ -2488,6 +2492,7 @@ function setDefault(){
         eyeBall.style.backgroundColor='red'
         emo.style.color='red'
         canvas.style.backgroundImage="url('./texture/bgZombie.png')"
+        food.style.backgroundImage="url('./texture/foodZombie.png')"
     }else if(mode==='war'){
         warSound.play()
         bomb=0
@@ -2503,6 +2508,7 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
         canvas.style.backgroundImage="url('./texture/bgWar.jpg')"
+        food.style.backgroundImage="url('./texture/foodWar.png')"
     }else if(mode==='super'){
         superSound.play()
         feature.style.display='block'
@@ -2526,6 +2532,7 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
         canvas.style.backgroundImage="url('./texture/bgSuper.png')"
+        food.style.backgroundImage="url('./texture/foodSuper.png')"
     }else if(mode==='angry'){
         angrySound.play()
         feature.style.display='none'
@@ -2545,6 +2552,7 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
         canvas.style.backgroundImage="url('./texture/bgNormal.jpg')"
+        food.style.backgroundImage="url('./texture/foodNormal.png')"
         }
     end()
     begin()
@@ -2693,7 +2701,10 @@ function lose(){
         end()
         isRunning=false
         stop=true
-        setTimeout(function(){alert("you've lost")},100)
+        setTimeout(function(){
+            alert("you've lost")
+            updateScore()
+        },100)
         if(mode==='angry'){
             hitSound.play()
             fallSound.play()
@@ -2718,7 +2729,6 @@ function lose(){
         emo.style.display='block'
         eyeBall.style.display='none'
         description.textContent='Click anywhere to return menu'
-        updateScore()
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
             game.style.display='none'
@@ -2733,13 +2743,13 @@ function win(){
         end()
         isRunning=false
         stop=true
-        alert("you've won")
         emo.textContent='^'
         emo.style.top='1px'
         emo.style.left='3px'
         emo.style.display='block'
         eyeBall.style.display='none'
         description.textContent='Click anywhere to return menu'
+        alert("you've won")
         updateScore()
         window.addEventListener('click',function resetClick(){
             menu.style.display='flex'
