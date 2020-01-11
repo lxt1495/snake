@@ -13,6 +13,12 @@ html,body{
     min-width: 100%;
     min-height: 100%;
 }
+button{
+    background-color: lightyellow;
+}
+button:hover{
+    background-color: #ddd;
+}
 .menu{
     display:flex;
     position: relative;
@@ -148,17 +154,17 @@ html,body{
     margin:none;
     height: 33.333333%;
 }
-button:hover{
-    background-color: #ddd;
-}
 label{
     margin:auto
+}
+.label-enemy-number{
+    display:none
 }
 .label-enemy-speed{
     display:none
 }
 .game{
-    display:none;
+    display:none
 }
 .canvas{
     position:absolute;
@@ -377,11 +383,12 @@ label{
     left: 0%;
     height: 50%;
     width: 100%;
-    color: lightcoral;
+    color: lightsalmon;
+    font-size: 3vh;
+    text-align: center;
     border: 2px dashed yellowgreen;
     padding:none;
     margin:none;
-    text-align: justify;
     overflow: auto;
 }
 @keyframes Dropdown{
