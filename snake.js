@@ -2302,10 +2302,18 @@ function foodDefault(){
     if(mode==='super'){
         Object.values(foe).forEach(x=>{if(x&&x.offsetTop===food.offsetTop&&x.offsetLeft===food.offsetLeft){foodDefault()}})
         switch(Math.floor(Math.random()*4+1)){
-            case 1:{foodType='strong';break}
-            case 2:{foodType='laser';break}
-            case 3:{foodType='bomb';break}
-            case 4:{foodType='mind';break}
+            case 1:{foodType='strong'
+                    food.style.backgroundImage="url('./texture/foodStrong.png')"
+                    break}
+            case 2:{foodType='laser'
+                    food.style.backgroundImage="url('./texture/foodLaser.png')"
+                    break}
+            case 3:{foodType='bomb'
+                    food.style.backgroundImage="url('./texture/foodBomb.png')"
+                    break}
+            case 4:{foodType='mind'
+                    food.style.backgroundImage="url('./texture/foodMind.png')"
+                    break}
             default:{console.log('food err')}
         }
     }
@@ -2602,7 +2610,6 @@ function setDefault(){
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
         canvas.style.backgroundImage="url('./texture/bgSuper.png')"
-        food.style.backgroundImage="url('./texture/foodSuper.png')"
     }else if(mode==='angry'){
         angrySound.play()
         feature.style.display='none'
