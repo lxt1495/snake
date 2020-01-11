@@ -2613,7 +2613,7 @@ function setDefault(){
         Object.values(square).forEach(x=>{if(x){x.style.backgroundColor='lightcoral'}})
         eyeBall.style.backgroundColor='black'
         emo.style.color='black'
-        canvas.style.backgroundImage="url('./texture/bgSuper.png')"
+        canvas.style.backgroundImage="url('./texture/bgSuper.jpg')"
     }else if(mode==='angry'){
         bgFlappy.style.display='block'
         angrySound.play()
