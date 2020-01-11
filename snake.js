@@ -37,6 +37,7 @@ let unbound=document.querySelector('.unbound')
 let modalMenu=document.querySelector('.modal-menu')
 let game=document.querySelector('.game')
 let canvas=document.querySelector('.canvas')
+let bgFlappy=document.getElementById('bg-flappy')
 let square = document.querySelectorAll('.square')
 let main=square[0]
 let eyeCover=document.querySelector('.eye-cover')
@@ -2321,6 +2322,7 @@ function foodDefault(){
     }
 function begin(){
     if(mode==='angry'){
+        bgFlappy.play()
         brickWaveIndex=setInterval(brickWave,brickWaveSpeed)
         brickWallIndex=setInterval(brickWall,brickWallSpeed)
     }else{
@@ -2362,6 +2364,7 @@ function end(){
     window.removeEventListener('touchstart',touchStart,false)
     window.removeEventListener('touchend',touchEnd,false)
     time.style.animation=''
+    bgFlappy.pause()
     }
 function setCanvas(){
     if(window.innerWidth>1000){
@@ -2395,6 +2398,7 @@ function setCanvas(){
     canvas.style.left=canvasLeft+'px'
     canvas.style.height=canvasHeight+'px'
     canvas.style.width=canvasWidth+'px'
+    bgFlappy.style.display='none'
     let bricks=document.querySelectorAll('.brick')
     if(bricks){Object.values(bricks).forEach(x=>x.remove())}
     let enemy=document.querySelectorAll('.enemy')
@@ -2611,6 +2615,7 @@ function setDefault(){
         emo.style.color='black'
         canvas.style.backgroundImage="url('./texture/bgSuper.png')"
     }else if(mode==='angry'){
+        bgFlappy.style.display='block'
         angrySound.play()
         feature.style.display='none'
         brickWave()
@@ -2810,6 +2815,8 @@ function lose(){
         eyeBall.style.display='none'
         description.textContent='Click anywhere to return menu'
         window.addEventListener('click',function resetClick(){
+            bgFlappy.currentTime=0
+            bgFlappy.style.display='none'    
             menu.style.display='flex'
             game.style.display='none'
             stopPlaySound()
@@ -2832,6 +2839,8 @@ function win(){
         alert("you've won")
         updateScore()
         window.addEventListener('click',function resetClick(){
+            bgFlappy.currentTime=0
+            bgFlappy.style.display='none'    
             menu.style.display='flex'
             game.style.display='none'
             stopPlaySound()
@@ -2854,6 +2863,11 @@ pause.addEventListener('click',function(){
     }
     },false)
 reset.addEventListener('click',function(){
+    end()
+    isRunning=false
+    stop=true
+    bgFlappy.currentTime=0
+    bgFlappy.style.display='none'
     modalMenu.style.display='none'
     setDefault()
     },false)
@@ -2861,6 +2875,8 @@ exit.addEventListener('click',function(){
     end()
     isRunning=false
     stop=true
+    bgFlappy.currentTime=0
+    bgFlappy.style.display='none'
     modalMenu.style.display='none'
     game.style.display='none'
     menu.style.display='flex'

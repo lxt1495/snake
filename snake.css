@@ -13,6 +13,13 @@ html,body{
     min-width: 100%;
     min-height: 100%;
 }
+#bg-flappy{
+    display: none;
+    object-fit: initial;
+    border:none;
+    padding:none;
+    margin:none;
+}
 button{
     background-color: lightyellow;
 }
