@@ -681,7 +681,7 @@ function check(){
             })    
     }
     Object.values(document.querySelectorAll('.square:not(.main)')).forEach(x=>{
-        if(x&&!foeMindControl){
+        if(x&&mode!=='super'){
             if(x.offsetTop===main.offsetTop&&x.offsetLeft===main.offsetLeft){lost=true}
             }
         })
